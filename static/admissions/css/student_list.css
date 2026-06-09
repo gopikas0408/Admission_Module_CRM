@@ -1,0 +1,418 @@
+body {
+    position: relative;
+    top: 30px;
+    overflow-x: hidden;
+}
+
+.edit-container {
+    width: 95%;
+    margin: 70px auto 20px auto; 
+
+}
+
+.list-container {
+    width: 90%;
+    margin: auto;
+}
+
+.table-container {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+/* ========================= FILTER GRID ========================= */
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    align-items: end;
+}
+
+.filter-grid input,
+.filter-grid select {
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* ========================= TOP BAR ========================= */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+input,
+select {
+    padding: 8px;
+}
+
+/* ========================= BUTTONS ========================= */
+button {
+    background: rgb(30, 42, 120);
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+button:hover {
+    background-color: rgb(255, 202, 43);
+    color: rgb(30, 42, 120);
+    box-shadow: 0px 4px 10px rgb(255, 202, 43);
+}
+
+/* search + reset buttons */
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.filter {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: end;
+}
+
+/* ========================= DOWNLOAD SECTION ========================= */
+#btn1 {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.format-box {
+    display: flex;
+    flex-direction: column;
+}
+
+#error-msg {
+    color: red;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+/* ========================= TABLE ========================= */
+.table-wrapper {
+    width: 100%;
+    overflow: visible;
+    position: relative;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+}
+
+
+/* ========================= BADGES ========================= */
+.badge {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.paid {
+    background: #d4edda;
+    color: green;
+}
+
+.pending {
+    background: #f8d7da;
+    color: red;
+}
+
+.partial {
+    background: #fff3cd;
+    color: orange;
+}
+
+.badge.enrolled {
+    background-color: #d4f5e9;
+    color: #1ca97c;
+}
+
+.badge.confirmed {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.badge.enquiry {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.badge.dropped {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+/* ========================= DROPDOWN ========================= */
+.dropdown {
+    position: relative;
+    overflow: visible;
+}
+
+.dots {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: black;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    min-width: 100px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    border-radius: 6px;
+}
+.dropdown-content a {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: black;
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* ========================= PAGINATION ========================= */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 5px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: #555;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn.prev {
+    background-color: #f3f4f6;
+    color: #333;
+}
+
+.btn.next {
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn.next:hover {
+    background-color: rgb(255, 202, 43);
+    color: rgb(30, 42, 120);
+}
+
+/* ========================= TABLET VIEW ========================= */
+@media(max-width: 992px) {
+    .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter-buttons {
+        grid-column: span 2;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media(max-width: 668px) {
+    .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter-buttons {
+        grid-column: span 2;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* ========================= MOBILE VIEW ========================= */
+@media(max-width: 550px) {
+    
+
+    .list-container {
+        width: 95%;
+    }
+
+    h1,
+    h2 {
+        font-size: 18px;
+    }
+
+    /* single column */
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* buttons below search */
+    .filter-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .filter-buttons button {
+        width: 100%;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #btn1 {
+        width: 100%;
+        flex-direction: column;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+
+    .table-container {
+        display: block;
+    }
+
+    #btn2 {
+        position: relative;
+        left: 0;
+    }
+
+    #btn {
+        position: relative;
+        right: 0;
+        justify-content: end;
+    }
+
+    #filter {
+        position: relative;
+        right: 0;
+    }
+
+    .btn2 {
+        position: relative;
+        bottom: 0;
+    }
+
+    .down {
+        position: fixed;
+        bottom: 15px;
+    }
+
+
+    .format-box {
+        width: 100%;
+    }
+
+    input {
+        width: 100%;
+    }
+
+    select {
+        width: 100%;
+    }
+
+    table {
+        min-width: 800px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .btn.prev{
+        margin-left: 330px;
+    }
+    .btn.next {
+        margin-left: 330px;
+    }
+
+    .pagination-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pagination-buttons {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 1100px;
+    }
+
+    /* OPTIONAL SCROLLBAR */
+    .table-wrapper::-webkit-scrollbar {
+        height: 2px;
+        width: 2px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+        background: rgb(255, 202, 43);
+        border-radius: 10px;
+    }
+
+
+}

@@ -1,0 +1,571 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root{
+
+    --primary:#262170;
+    --secondary:#FEF200;
+
+    --white:#ffffff;
+    --light:#f8f9fc;
+
+    --border:#e5e7eb;
+
+    --text:#111827;
+    --muted:#6b7280;
+
+    --success:#16a34a;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+
+    --shadow:0 4px 18px rgba(0,0,0,0.04);
+
+}
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+
+}
+
+body{
+
+    background:#f5f7fb;
+
+}
+.main-content{
+
+    margin-left:240px;
+
+    padding:20px;
+
+    min-height:100vh;
+
+}
+
+/* PAGE */
+
+.low-attendance-page{
+
+    width:100%;
+    zoom:90%;
+
+}
+
+
+/* TOPBAR */
+
+.topbar-section{
+
+    margin-bottom:28px;
+
+}
+
+.page-title{
+
+    font-size:26px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    margin:0;
+
+}
+
+
+/* CARDS */
+
+.attendance-card{
+
+    background:var(--white);
+
+    border-radius:18px;
+
+    padding:16px;
+
+    box-shadow:var(--shadow);
+
+    border:1px solid var(--border);
+
+}
+
+.attendance-card-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
+    padding-bottom:16px;
+    border-bottom:1px solid #edf2f7;
+
+}
+
+.header-left{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:18px;
+    font-weight:700;
+
+}
+
+.header-left i{
+
+    font-size:15px;
+
+}
+
+.header-right{
+
+    font-size:16px;
+    font-weight:700;
+
+}
+
+
+/* CRITICAL */
+
+.critical-text{
+
+    color:#dc2626;
+
+}
+
+.critical-percent-label{
+
+    color:#dc2626;
+
+}
+
+
+/* WARNING */
+
+.warning-text{
+
+    color:#d97706;
+
+}
+
+.warning-percent-label{
+
+    color:#d97706;
+
+}
+
+
+/* STUDENT CARD */
+
+.student-warning-card{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:10px 14px;
+
+    min-height:72px;
+
+    border-radius:16px;
+
+    margin-bottom:12px;
+
+    transition:0.3s;
+
+}
+
+.student-warning-card:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.critical-warning-card{
+
+    background:#fff1f2;
+    border:1px solid #fecdd3;
+
+}
+
+.warning-warning-card{
+
+    background:#fff8eb;
+    border:1px solid #fde68a;
+
+}
+
+
+/* LEFT */
+
+.student-left-section h5{
+
+    margin:0;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+}
+
+.warning-icon{
+
+    width:34px;
+    height:34px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    flex-shrink:0;
+
+}
+
+.critical-icon{
+
+    background:#fee2e2;
+    color:#dc2626;
+
+}
+
+.warning-icon-bg{
+
+    background:#fef3c7;
+    color:#d97706;
+
+}
+
+
+.student-left-section p{
+
+    margin:4px 0 0;
+
+    font-size:12px;
+
+    color:var(--muted);
+
+    line-height:1.4;
+
+}
+
+/* RIGHT */
+
+
+.student-right-section h3{
+
+    margin:0;
+    font-size:16px;
+    font-weight:700;
+
+}
+
+.critical-score{
+
+    color:#dc2626;
+
+}
+
+.warning-score{
+
+    color:#d97706;
+
+}
+
+
+/* MAIL BUTTON */
+
+.mail-btn{
+
+    width:38px;
+    height:38px;
+    border:none;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    transition:0.3s;
+
+}
+
+.mail-btn:hover{
+
+    transform:scale(1.05);
+
+}
+
+.critical-mail-btn{
+
+    background:#ffe4e6;
+    color:#dc2626;
+
+}
+
+.warning-mail-btn{
+
+    background:#fef3c7;
+    color:#d97706;
+
+}
+.action-buttons{
+
+    display:flex;
+    gap:6px;
+
+}
+
+
+/* BULK CARD */
+
+.bulk-notification-card{
+
+    margin-top:30px;
+    background:white;
+    border-radius:22px;
+    padding:24px;
+    box-shadow:0 4px 18px rgba(15,23,42,0.05);
+    border:1px solid #eef2f7;
+
+}
+
+.bulk-top{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+    gap:10px;
+    padding-bottom:18px;
+    border-bottom:1px solid #edf2f7;
+
+}
+
+.bulk-top h4{
+
+    font-size:18px;
+    font-weight:700;
+    color:#111827;
+    margin:0;
+
+}
+
+.bulk-top p{
+
+    margin:0;
+    font-size:13px;
+    color:#9ca3af;
+
+}
+
+
+/* BUTTONS */
+
+.bulk-buttons{
+
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+
+}
+
+.bulk-buttons .btn{
+
+    border-radius:14px;
+    padding:12px 20px;
+    font-size:13px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    border:none;
+    transition:0.3s;
+
+}
+
+.bulk-buttons .btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.bulk-sms-btn{
+
+    background:#dc2626;
+    color:white;
+
+}
+
+.bulk-email-btn{
+
+    background:#2563eb;
+    color:white;
+
+}
+
+.bulk-report-btn{
+
+    background:#f8fafc;
+    border:1px solid #e2e8f0 !important;
+    color:#374151;
+
+}
+/* FILTER SECTION */
+
+.filter-container{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:10px;
+
+    margin-bottom:20px;
+
+}
+
+.filter-input{
+
+    height:38px;
+
+    font-size:12px;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    padding:0 12px;
+
+    background:var(--white);
+
+}
+
+.filter-input:focus{
+
+    outline:none;
+
+    border:2px solid var(--text);
+
+    box-shadow:none;
+
+}
+
+.clear-btn{
+
+    height:38px;
+
+    background:var(--primary);
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+
+/* MOBILE */
+
+@media(max-width:992px){
+
+    .filter-container{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .filter-container{
+
+        grid-template-columns:
+            repeat(1,1fr);
+
+    }
+
+    .filter-input,
+    .clear-btn{
+
+        width:100%;
+
+    }
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+    .page-title{
+
+        font-size:24px;
+
+    }
+
+    .attendance-card-header{
+
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+
+    }
+
+    .student-warning-card{
+
+        flex-direction:column;
+        align-items:flex-start;
+        gap:16px;
+
+    }
+
+    .student-right-section{
+
+        width:100%;
+        justify-content:space-between;
+
+    }
+
+    .bulk-top{
+
+        flex-direction:column;
+        align-items:flex-start;
+
+    }
+
+    .bulk-buttons{
+
+        width:auto;
+        min-width:220px;
+        max-width:260px;
+        padding:10px 16px;
+        font-size:12px;
+        border-radius:12px;
+        justify-content:center;
+
+    }
+
+}
+@media(max-width:768px){
+
+    .main-content{
+
+        margin-left:0;
+
+        width:100%;
+
+        padding:15px;
+
+    }
+
+}

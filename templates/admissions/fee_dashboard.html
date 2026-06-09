@@ -1,0 +1,507 @@
+{% extends 'admissions/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Payment Process</title>
+{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'admissions/css/fee_dashboard.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- SUMMARY CARDS -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-4 mb-3">
+
+            <div class="summary-card summary-green">
+
+                <i class="fas fa-wallet summary-icon"></i>
+
+                <h5>Total Collected</h5>
+
+                <p class="amount">
+                    ₹{{ summary.collected }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+
+            <div class="summary-card summary-red">
+
+                <i class="fas fa-exclamation-circle summary-icon"></i>
+
+                <h5>Outstanding</h5>
+
+                <p class="amount">
+                    ₹{{ summary.outstanding }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4 mb-3">
+
+            <div class="summary-card summary-blue">
+
+                <i class="fas fa-file-invoice summary-icon"></i>
+
+                <h5>Receipts</h5>
+
+                <p class="amount">
+                    {{ summary.receipts }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PAYMENT FORM -->
+
+    <div class="personal-info">
+
+        <div class="custom-card mb-4">
+
+            <div class="card-body">
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Student
+                        </label>
+
+                        <select name="student" class="form-select" required>
+
+                            <option value="" selected disabled>
+                                Select Student
+                            </option>
+
+                            {% for s in students %}
+
+                            <option value="{{ s.id }}" {% if selected_student_id == s.id|stringformat:"s" %} selected {% endif %}>
+
+                                STU{{ s.id }} -
+                                {{ s.first_name }}
+                                {{ s.last_name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Amount
+                        </label>
+
+                        <input type="number" name="amount" id="amount" class="form-control" placeholder="Amount" min="1"
+                            required>
+
+                        <small id="amount-error" style="color:red;"></small>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Payment Mode
+                        </label>
+
+                        <select name="mode" id="paymentMode" class="form-select" required>
+
+                            <option value="" selected disabled>
+                                Select Payment Mode
+                            </option>
+
+                            <option value="UPI">
+                                UPI
+                            </option>
+
+                            <option value="CASH">
+                                Cash
+                            </option>
+
+                            <option value="CARD">
+                                Card
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Reference ID
+
+                        </label>
+
+                        <input type="text" name="reference" id="reference" class="form-control"
+                            placeholder="Ex: UPI458721 / TXN1023" pattern="[A-Za-z0-9]+"
+                            title="Only letters and numbers allowed">
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Remarks
+                            <span style="color:gray; font-size:13px;">
+                                (Optional)
+                            </span>
+                        </label>
+
+                        <textarea name="remarks" id="remarks" class="form-control" placeholder="Enter remarks"
+                            oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')">
+                        </textarea>
+
+                    </div>
+
+                    <button type="submit" class="save-btn">
+
+                        Save Payment
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PAYMENT HISTORY -->
+
+    <div class="personal-info">
+
+        <div class="custom-card">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <h5 class="mb-0">
+                        Payment History
+                    </h5>
+
+                    <a href="?format=excel" class="btn btn-success">
+
+                        Export Excel
+
+                    </a>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Student</th>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Mode</th>
+                                <th>Receipt</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for p in payments %}
+
+                            <tr>
+
+                                <td>
+                                    {{ p.student.first_name }}
+                                    {{ p.student.last_name }}
+                                </td>
+
+                                <td>
+                                    STU{{ p.student.id }}
+                                </td>
+
+                                <td>
+                                    {{ p.date }}
+                                </td>
+
+                                <td>
+                                    ₹{{ p.amount }}
+                                </td>
+
+                                <td>
+                                    {{ p.mode }}
+                                </td>
+
+                                <td class="d-flex gap-2">
+
+                                    <a href="{% url 'preview_receipt' p.id %}" class="btn btn-sm btn-primary"
+                                        target="_blank">
+
+                                        Preview PDF
+
+                                    </a>
+
+                                    <a href="{% url 'generate_receipt' p.id %}" class="btn btn-sm btn-success" download>
+
+                                        PDF Download
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="5" class="text-center">
+
+                                    No payments found
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- STUDENT FEE STATUS -->
+
+    <div class="personal-info">
+
+        <div class="custom-card">
+
+            <div class="card-body">
+
+                <h5 class="mb-3">
+                    Student Fee Status
+                </h5>
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Student Name & ID</th>
+                                <th>Total Fee</th>
+                                <th>Paid</th>
+                                <th>Pending</th>
+                                <th>Status</th>
+                                <th class="text-center">Add new payment</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for item in student_fee_status %}
+
+                            <tr>
+
+                                <td>
+                                    {{ item.student.first_name }}
+                                    {{ item.student.last_name }} - STU{{ item.student.id }}
+                                </td>
+
+                                <td>
+                                    ₹{{ item.total_fee }}
+                                </td>
+
+                                <td class="text-success">
+                                    ₹{{ item.paid }}
+                                </td>
+
+                                <td class="text-danger">
+                                    ₹{{ item.pending }}
+                                </td>
+
+                                <td>
+
+                                    {% if item.status == 'Paid' %}
+
+                                    <span class="badge bg-success">
+                                        Paid
+                                    </span>
+
+                                    {% elif item.status == 'Partial' %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Partial
+                                    </span>
+
+                                    {% else %}
+
+                                    <span class="badge bg-danger">
+                                        Pending
+                                    </span>
+
+                                    {% endif %}
+
+                                </td>
+                                <td class="text-center">
+ 
+    <a href="{% url 'fee_dashboard' %}?student_id={{ item.student.id }}" class="btn btn-success btn-sm">
+    <i class="fas fa-plus"></i></a>
+    </td>
+ 
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="5" class="text-center">
+
+                                    No Students Found
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const amountInput = document.getElementById("amount");
+    const errorText = document.getElementById("amount-error");
+
+    amountInput.addEventListener("input", function () {
+
+        if (parseFloat(amountInput.value) <= 0) {
+
+            errorText.innerText =
+                "Amount must be greater than 0";
+
+        } else {
+
+            errorText.innerText = "";
+
+        }
+
+    });
+    /* PAYMENT MODE */
+
+    const paymentMode =
+        document.getElementById("paymentMode");
+
+    /* REFERENCE INPUT */
+
+    const referenceInput =
+        document.getElementById("reference");
+
+    /* INITIAL CHECK */
+
+    toggleReference();
+
+    /* MODE CHANGE */
+
+    paymentMode.addEventListener("change", toggleReference);
+
+    function toggleReference() {
+
+        if (paymentMode.value === "UPI" ||
+            paymentMode.value === "CARD") {
+
+            referenceInput.required = true;
+
+            referenceInput.placeholder =
+                "Enter Transaction ID";
+
+        }
+
+        else {
+
+            referenceInput.required = false;
+
+            referenceInput.value = "";
+
+            referenceInput.placeholder =
+                "Not Required for Cash";
+
+        }
+
+    }
+
+    /* ONLY LETTERS + NUMBERS */
+
+    referenceInput.addEventListener("input", function () {
+
+        this.value =
+            this.value.replace(/[^A-Za-z0-9]/g, '');
+
+    });
+
+    /* REMARKS VALIDATION */
+
+    const remarksInput =
+        document.getElementById("remarks");
+
+    remarksInput.addEventListener("input", function () {
+
+        this.value =
+            this.value.replace(/[^A-Za-z ]/g, '');
+
+    });
+
+
+</script>
+
+
+
+{% endblock content %}

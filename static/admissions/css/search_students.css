@@ -1,0 +1,275 @@
+body{
+    position: relative;
+    top: 10px;
+}
+
+.edit-container {
+    width: 95%;
+    margin: 70px auto 20px auto; 
+}
+
+.filter-grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+
+.filter-grid input,
+.filter-grid select{
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.top-bar {
+
+    gap: 10px;
+    margin: 20px 0;
+}
+
+input,
+select {
+    padding: 8px;
+}
+
+button {
+    background: rgb(30, 42, 120);
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+}
+
+
+button:hover {
+    background-color: rgb(255, 202, 43);
+    color: rgb(30, 42, 120);
+    box-shadow: 0px 4px 10px rgb(255, 202, 43);
+}
+
+.form-btn{
+    margin-top: 20px;
+    display: flex;
+    gap: 5px;
+    align-items: end;
+    justify-content: flex-end;
+}
+
+
+table {
+    width: 100%;
+    position: relative;
+    top: 20px;
+    border-collapse: collapse;
+    background: white;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+th,td {
+    border-bottom: 1px solid #ddd;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.paid {
+    background: #d4edda;
+    color: green;
+}
+
+.pending {
+    background: #f8d7da;
+    color: red;
+}
+
+.partial {
+    background: #fff3cd;
+    color: orange;
+}
+
+.badge {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+/* Admission Status Colors */
+.badge.enrolled {
+    background-color: #d4f5e9;
+    color: #1ca97c;
+}
+
+.badge.confirmed {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.badge.enquiry {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.badge.dropped {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+a{
+    text-decoration: none;
+    color: white;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 5px;
+}
+
+/* Left text */
+.pagination-info {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Right buttons */
+.pagination-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Prev button */
+.btn.prev {
+    background-color: #f3f4f6;
+    color: #333;
+}
+
+/* Next button */
+.btn.next {
+    background-color: #2563eb;
+    color: white;
+}
+
+.custom-swal {
+    border-radius: 12px;
+    box-shadow: -5px 0 0 0 #d97706;
+}
+
+.custom-swal button:hover{
+    background-color: rgb(255, 202, 43);
+    color: rgb(30, 42, 120);
+    box-shadow: 0px 4px 10px rgb(255, 202, 43) ;
+}
+
+
+
+
+@media(max-width: 550px) {
+    body {
+        background-color: white;
+       margin-top: 8px
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    .table-container {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+
+    }
+
+    .filter-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .container2 {
+        width: 100%;
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 50%;
+    }
+
+    tbody {
+        display: block;
+        overflow-x: auto;
+    }
+
+    th,
+    td {
+        padding: 8px;
+    }
+
+    img {
+        width: 50px;
+        height: 50px;
+    }
+
+    select,
+    option {
+        font-size: 14px;
+    }
+
+    .btn1 {
+        position: relative;
+        top: 14px;
+    }
+
+    .btn2 {
+        position: relative;
+        top: 19px;
+    }
+
+    .table-wrapper{
+    width: 100%;
+    overflow-x: auto;
+
+    /* Firefox */
+    scrollbar-width: thin;
+}
+
+/* Chrome / Edge / Brave */
+.table-wrapper::-webkit-scrollbar{
+    height: 2px;
+}
+
+.table-wrapper::-webkit-scrollbar-track{
+    background: #e5e5e5;
+    border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb{
+    background: rgb(255, 202, 43);
+    border-radius: 10px;
+}
+
+}

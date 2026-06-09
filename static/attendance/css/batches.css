@@ -1,0 +1,355 @@
+body {
+    background-color: whitesmoke;
+    color: rgb(30, 42, 120);
+    font-family: Segoe UI;
+    zoom: 90%;
+    padding-left: 10px;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 15px 25px;
+    zoom: 0.9;
+    /* optional */
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.top-card {
+    background: rgb(30, 42, 120);
+    border: 1px solid rgb(255, 202, 43);
+    border-radius: 18px;
+    padding: 20px;
+}
+
+/* Icon Box */
+.icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+/* Total Batches */
+.icon-batches {
+    background: #172554;
+    color: #60a5fa;
+}
+
+/* Attendance Marked */
+.icon-marked {
+    background: #052e16;
+    color: #22c55e;
+}
+
+/* Not Marked */
+.icon-notmarked {
+    background: #450a0a;
+    color: #ef4444;
+}
+
+/* Total Students */
+.icon-students {
+    background: #451a03;
+    color: #f59e0b;
+}
+
+.top-card p {
+    color: rgb(255, 202, 43);
+    margin-bottom: 4px;
+}
+
+.top-card h2 {
+    color: white;
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.batch-card {
+    background: rgb(30, 42, 120);
+    border: 1px solid rgb(30, 42, 120);
+    color: rgb(255, 202, 43);
+    border-radius: 18px;
+    padding: 18px;
+    margin-top: 25px;
+    transition: 0.3s;
+}
+
+p{
+    color: white;
+}
+
+.batch-card:hover {
+    transform: translateY(-4px);
+    border-color: rgb(255, 202, 43);
+}
+
+.status {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.marked {
+    background: #123d2b;
+    color: #22c55e;
+}
+
+.not-marked {
+    background: #3b1d1d;
+    color: #ef4444;
+}
+
+.btn-attendance {
+    width: 100%;
+    background: rgb(15, 40, 199);
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    color: rgb(255, 202, 43);
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+.btn-attendance:hover {
+    background: rgb(255, 202, 43);
+    color: rgb(30, 42, 120);
+}
+
+.marked {
+    background: #123d2b;
+    color: #22c55e;
+}
+
+.not-marked {
+    background: #4a2a05;
+    color: #f59e0b;
+}
+
+.attendance-modal {
+    background: rgb(30, 42, 120);
+    border: 1px solid rgb(255, 202, 43);
+    border-radius: 20px;
+    color: white;
+}
+
+.attendance-modal label {
+    color: #cbd5e1;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.remarks-input {
+    background: rgb(30, 42, 120);
+    border: 1px solid rgb(255, 202, 43) ;
+    color: white;
+    border-radius: 10px;
+    height: 48px;
+}
+
+.remarks-input:focus {
+    background: #1e293b;
+    color: white;
+    border-color: #2563eb;
+    box-shadow: none;
+}
+
+.modal-content {
+    border-radius: 20px;
+}
+
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.form-select {
+    background: white;
+    color:rgb(30, 42, 120);
+    border: 1px solid #334155;
+}
+
+.form-select option {
+    background: rgb(30, 42, 120);
+    color: white;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+input[type="date"],
+input[type="time"] {
+    cursor: pointer;
+}
+
+.search-box {
+    position: relative;
+    width: 400px;
+    margin-left: 250px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 10px 10px 40px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.batch-card.upcoming {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* ==========================
+   TABLET VIEW
+========================== */
+@media (max-width: 1024px) {
+
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .search-box {
+        width: 250px;
+        margin-left: 0;
+    }
+
+    .top-card h2 {
+        font-size: 32px;
+    }
+}
+
+
+/* ==========================
+   MOBILE VIEW
+========================== */
+@media (max-width: 768px) {
+
+    body {
+        padding-left: 0;
+        zoom: 100%;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    /* Header */
+    .d-flex.justify-content-between.align-items-center.mb-4 {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 12px;
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-4 h2 {
+        font-size: 22px;
+        text-align: center;
+    }
+
+    /* Search */
+    .search-box {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    /* Button */
+    .btn-primary {
+        width: 100%;
+    }
+
+    /* Cards */
+    .top-card {
+        margin-bottom: 15px;
+    }
+
+    .top-card h2 {
+        font-size: 28px;
+    }
+
+    /* Batch cards */
+    .batch-card {
+        margin-top: 15px;
+    }
+
+    .batch-card h4 {
+        font-size: 18px;
+    }
+
+    .batch-card .d-flex {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .status {
+        align-self: flex-start;
+    }
+
+    /* Modal Grid */
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .modal-dialog {
+        margin: 10px;
+    }
+}
+
+
+/* ==========================
+   SMALL MOBILE VIEW
+========================== */
+@media (max-width: 480px) {
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .top-card {
+        padding: 15px;
+    }
+
+    .top-card h2 {
+        font-size: 24px;
+    }
+
+    .icon-box {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .batch-card h4 {
+        font-size: 16px;
+    }
+
+    .btn-attendance {
+        padding: 10px;
+        font-size: 14px;
+    }
+}

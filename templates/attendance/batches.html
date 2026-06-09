@@ -1,0 +1,387 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Student Attendance - Batches</title>
+{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'attendance/css/batches.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+
+<div class="main-content">
+
+    <div class="container-fluid mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Student Attendance — Batches</h2>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by batch, course, trainer, timing...">
+            </div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#batchModal">+ New Batch</button>
+        </div>
+
+        <!-- TOP CARDS -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="top-card">
+                    <div class="icon-box icon-batches">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <p>Total Batches</p>
+                    <h2 id="totalBatches">0</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="top-card">
+                    <div class="icon-box icon-marked">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <p>Attendance Marked</p>
+                    <h2 id="attendanceMarked">0</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="top-card">
+                    <div class="icon-box icon-notmarked">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <p>Not Marked</p>
+                    <h2 id="notMarked">0</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="top-card">
+                    <div class="icon-box icon-students">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <p>Total Students</p>
+                    <h2 id="totalStudents">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- BATCHES -->
+        <div class="row mt-3" id="batchContainer"></div>
+
+        <!-- BATCH CREATE MODAL -->
+        <div class="modal fade" id="batchModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content attendance-modal">
+
+                    <div class="modal-header border-secondary">
+                        <h5 class="modal-title">Create New Batch</h5>
+
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal">
+                        </button>
+                    </div>
+
+                    <form method="post" id="batchForm">
+                        {% csrf_token %}
+
+                        <div class="modal-body">
+
+                            <div class="mb-3">
+                                <label>Batch Name</label>
+                                {{ form.batch_name }}
+                            </div>
+
+                            <div class="grid gap-3">
+                                <div class="mb-3">
+                                    <label>Course</label>
+                                    {{ form.course }}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Timing</label>
+                                    {{ form.timing }}
+                                </div>
+                            </div>
+
+                            <div class="grid gap-3">
+                                <div class="mb-3">
+                                    <label>Start Date</label>
+                                    {{ form.start_date }}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>End Date</label>
+                                    {{ form.end_date }}
+                                </div>
+                            </div>
+
+                            <div class="grid gap-3">
+                                <div class="mb-3">
+                                    <label>Start Time</label>
+                                    {{ form.start_time }}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>End Time</label>
+                                    {{ form.end_time }}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Trainer</label>
+                                {{ form.trainer }}
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer border-secondary">
+
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+
+                            <button type="submit" class="btn btn-primary">
+                                Create Batch
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    // CSRF helper
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.getElementById('batchForm')
+        .addEventListener('submit', async function (e) {
+
+            e.preventDefault()
+
+            const res = await fetch('/api/batches/', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+
+                body: JSON.stringify({
+
+                    batch_name:
+                        document.getElementById('id_batch_name').value,
+
+                    course:
+                        document.getElementById('id_course').value,
+
+                    timing:
+                        document.getElementById('id_timing').value,
+
+                    start_time:
+                        document.getElementById('id_start_time').value,
+
+                    end_time:
+                        document.getElementById('id_end_time').value,
+
+                    trainer:
+                        document.getElementById('id_trainer').value || null,
+                    
+                    start_date:
+                        document.getElementById('id_start_date').value,
+                    
+                    end_date:
+                        document.getElementById('id_end_date').value,
+                })
+            })
+
+            if (res.ok) {
+
+                bootstrap.Modal
+                    .getInstance(document.getElementById('batchModal'))
+                    .hide()
+
+                document.getElementById('batchForm').reset()
+
+                loadBatches()
+
+                alert('Batch Created Successfully')
+            }
+            else {
+                try {
+                    const error = await res.json();
+                    console.log("SERVER ERROR:", error);
+                    alert(JSON.stringify(error, null, 2));
+                } catch {
+                    const error = await res.text();
+                    console.log("SERVER ERROR:", error);
+                    alert(error);
+                }
+            }
+        })
+
+
+    function formatTime(timeStr) {
+
+        const date = new Date(`1970-01-01T${timeStr}`);
+
+        return date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    async function loadBatches(search = "") {
+
+        const res = await fetch(`/api/batches/?search=${encodeURIComponent(search)}`)
+        console.log(res)
+
+        const batches = await res.json()
+        console.log("Batches:", batches)
+
+
+        const container = document.getElementById('batchContainer')
+        container.innerHTML = ''
+
+        let totalStudents = 0
+        let markedCount = 0
+        let notMarkedCount = 0
+
+        document.getElementById('totalBatches').innerText = batches.length
+
+        batches.forEach(batch => {
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const startDate = new Date(batch.start_date);
+
+            const isUpcoming = startDate > today;
+
+
+            console.log(batch);
+
+            totalStudents += batch.student_count
+
+            if (batch.is_marked) markedCount++
+            else notMarkedCount++
+
+            container.innerHTML += `
+        <div class="col-lg-4 col-md-6">
+            <div class="batch-card ${isUpcoming ? 'upcoming' : ''}" id="batch-${batch.id}">
+
+                <div class="d-flex justify-content-between">
+                    <h4>${batch.course_name} ${batch.batch_name}</h4>
+
+                    <span class="status ${batch.is_marked ? 'marked' : 'not-marked'}">
+                        ${batch.is_marked ? 'Marked' : 'Not Marked'}
+                    </span>
+                </div>
+
+                <p class="mt-2"><i class="fa-regular fa-clock"></i> ${batch.timing} - ${formatTime(batch.start_time)} to ${formatTime(batch.end_time)}</p>
+
+                <p>Total Students: <strong>${batch.student_count}</strong></p>
+                <p>Trainer: <strong>${batch.trainer_name || 'No Trainer'}</strong></p>
+
+                ${isUpcoming
+    ? `<button class="btn-attendance" disabled>
+            Upcoming
+       </button>`
+    : `<button class="btn-attendance"
+            onclick="window.location.href='/api/mark-attendance/${batch.id}/'">
+            ${batch.is_marked ? 'Update Entry' : 'Mark Attendance'}
+       </button>`
+}
+
+            </div>
+        </div>
+        `
+        })
+
+        document.getElementById('totalStudents').innerText = totalStudents
+        document.getElementById('attendanceMarked').innerText = markedCount
+        document.getElementById('notMarked').innerText = notMarkedCount
+    }
+
+    async function markAttendance(enrollment, batchId, status, remarks) {
+
+        for (let data of attendanceData) {
+
+            if ((data.status === 'Absent' || data.status === 'Late') && !data.remarks) {
+                alert("Remarks required")
+                return
+            }
+
+            const res = await fetch('/api/attendance/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    enrollment: enrollment,
+                    batch: batchId,
+                    status: status,
+                    remarks: remarks,
+                })
+            })
+        }
+
+        if (res.ok) {
+            alert("Attendance Marked Successfully 👍")
+
+            // reload to update UI
+            loadBatches()
+        } else {
+            const err = await res.text()
+            console.log("Error:", err)
+            alert("Failed to mark attendance ❌")
+        }
+    }
+
+    loadBatches()
+
+    document.getElementById('searchInput')
+        .addEventListener('input', function () {
+
+            loadBatches(this.value);
+        });
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll('input[type="date"], input[type="time"]')
+        .forEach(input => {
+
+            input.addEventListener("click", function () {
+
+                if (this.showPicker) {
+                    this.showPicker();
+                }
+
+            });
+
+        });
+
+});
+
+</script>
+
+{% endblock %}

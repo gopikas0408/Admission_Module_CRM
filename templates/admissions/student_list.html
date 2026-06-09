@@ -1,0 +1,391 @@
+{% extends 'admissions/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Student List</title>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admissions/css/student_list.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="edit-container">
+
+    <!-- FILTER FORM -->
+    <form method="GET" class="top-bar" id="filterForm">
+
+        <input type="text" name="search" pattern="^[A-Za-z ]+$" value="{{ request.GET.search }}"
+            placeholder="Search name">
+
+        <input type="text" name="id" pattern="^\d{1,5}$" value="{{ request.GET.id }}" placeholder="Search ID">
+
+        <select name="course_name">
+            <option value="">All Course</option>
+            {% for c in courses %}
+            <option value="{{ c.course_name }}" {% if request.GET.course_name == c.course_name %}selected{% endif %}>
+                {{ c.course_name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <select name="batch">
+            <option value="">All Batch</option>
+            <option value="June 2026" {% if request.GET.batch == "June 2026" %}selected{% endif %}>June 2026</option>
+            <option value="July 2026" {% if request.GET.batch == "July 2026" %}selected{% endif %}>July 2026</option>
+            <option value="August 2026" {% if request.GET.batch == "August 2026" %}selected{% endif %}>August 2026</option>
+        </select>
+
+        <div class="filter">
+        <p id="search-error"></p>
+
+        <button type="button" class="clear-btn" id="resetBtn">
+        Reset
+       </button>
+        <a href="#">
+            <button type="submit" id="filter">Search</button>
+        </a>
+        </div>
+    </form>
+
+    <div class="total-count">
+    Total Students: {{ total_students }}
+    </div>
+
+    <!-- DOWNLOAD -->
+    <div class="table-container">
+        <div>
+        <a href="{% url 'student' %}">
+            <button id="btn2" class="btn2">+ Add new Student</button>
+        </a>
+        </div>
+        <div>
+        <form method="GET" id="downloadForm">
+
+    <!-- KEEP FILTER VALUES -->
+    <input type="hidden" name="search" value="{{ request.GET.search }}">
+    <input type="hidden" name="id" value="{{ request.GET.id }}">
+    <input type="hidden" name="course_name" value="{{ request.GET.course_name }}">
+    <input type="hidden" name="batch" value="{{ request.GET.batch }}">
+
+    <div id="btn1">
+
+        <div class="format-box">
+
+            <select name="format" id="format">
+
+                <option value="">Select format</option>
+                <option value="excel">Download Excel</option>
+                <option value="pdf">Download PDF</option>
+
+            </select>
+
+            <p id="error-msg"></p>
+
+        </div>
+
+        <button type="submit"
+                id="btn2"
+                class="down"
+                onclick="return validateFormat()">
+
+            Download
+
+        </button>
+
+    </div>
+
+</form>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+<div class="table-wrapper">
+    <table>
+        <tr>
+            <th>Student</th>
+            <th>Student ID</th>
+            <th>Course</th>
+            <th>Batch</th>
+            <th>Phone</th>
+            <th>Fee Status </th>
+            <th>Admission Status</th>
+            <th>Joined</th>
+            <th>Profile</th>
+            <th>Action</th>
+            <th></th>
+        </tr>
+
+        {% for student in page_obj %}
+        {% for admission in student.admissions.all %}
+        {% with e=admission.enrollment %}
+        <tr>
+            <td>{{ student.first_name }} {{ student.last_name }}</td>
+
+            <td>STU{{ student.id }}</td>
+
+            <td>{{ admission.course_name }}</td>
+
+            <td>
+                {% if e %}
+                {{ e.batch }}
+                {% else %}
+                -
+                {% endif %}
+            </td>
+
+            <td>{{ student.phone_no }}</td>
+
+            <td>
+                {% if student.pending_amount <= 0 %}
+                
+                <span class="badge paid">
+                    Paid
+                </span>
+
+                {% elif student.total_paid > 0 %}
+
+                <span class="badge partial">
+                    Partial
+                </span>
+
+                {% else %}
+
+                <span class="badge pending">
+                    Pending
+                </span>
+
+                {% endif %}
+
+            </td>
+
+            <!-- STATUS -->
+            <td>
+                <span class="badge {{ admission.status|lower }}">
+                    {{ admission.status|title }}
+                </span>
+            </td>
+
+            <td>
+                {% if e %}
+                <span>
+                    {{ e.start_date }}
+                </span>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{% url 'view_student' student.id %}">View</a>
+            </td>
+
+            <!-- ACTION -->
+            <td class="dropdown">
+                <button class="dots" onclick="toggleDropdown(this)">⋮</button>
+
+                <div class="dropdown-content">
+                    <a href="{% url 'edit_student' student.id %}">Edit</a>
+                    <a href="{% url 'delete_student' student.id %}" onclick="confirmDelete(event, this.href)">Delete</a>
+                </div>
+            </td>
+        </tr>
+        {% endwith %}
+        {% empty %}
+        <tr>
+            <td>{{ student.first_name }} {{ student.last_name }}</td>
+            <td colspan="6">No admission</td>
+        </tr>
+        {% endfor %}
+        {% empty %}
+        <tr>
+            <td colspan="9">No students found</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="pagination-container">
+
+    <!-- LEFT TEXT -->
+    <div class="pagination-info">
+        {% if page == '2' %}
+        Showing remaining students
+        {% else %}
+        Showing 5 of {{ filter.qs.count }} students
+        {% endif %}
+    </div>
+
+    <!-- RIGHT BUTTONS -->
+    <div class="pagination-buttons">
+        {% if page == '2' %}
+        <a href="?page=1" class="btn prev">Prev</a>
+        {% else %}
+        <a href="?page=2" class="btn next">Next</a>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- DELETE CONFIRM -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function confirmDelete(event, url) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This student will be deleted permanently!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+</script>
+
+<!-- ACTION -->
+
+<script>
+    function toggleDropdown(button) {
+
+        // close all dropdowns
+        document.querySelectorAll(".dropdown-content").forEach(d => {
+            if (d !== button.nextElementSibling) {
+                d.classList.remove("show");
+            }
+        });
+
+        // toggle current dropdown
+        let dropdown = button.nextElementSibling;
+        dropdown.classList.toggle("show");
+    }
+
+    // outside click close
+    document.addEventListener("click", function (e) {
+
+        if (!e.target.matches('.dots')) {
+
+            document.querySelectorAll(".dropdown-content").forEach(d => {
+                d.classList.remove("show");
+            });
+
+        }
+
+    });
+</script>
+
+<script>
+function validateFormat() {
+
+    let format = document.getElementById("format").value;
+    let error = document.getElementById("error-msg");
+
+    if (format === "") {
+        error.innerText = "Please select one format";
+        return false;
+    }
+
+    error.innerText = "";
+    return true;
+}
+</script>
+
+<script>
+
+const form = document.getElementById("filterForm");
+const error = document.getElementById("search-error");
+
+form.addEventListener("submit", function(e) {
+
+    const inputs = form.querySelectorAll("input");
+    const selects = form.querySelectorAll("select");
+
+    let hasValue = false;
+
+    // CHECK INPUTS
+    inputs.forEach(input => {
+        if (input.value.trim() !== "") {
+            hasValue = true;
+        }
+    });
+
+    // CHECK SELECTS
+    selects.forEach(select => {
+        if (select.value.trim() !== "") {
+            hasValue = true;
+        }
+    });
+
+    // ALL EMPTY
+    if (!hasValue) {
+
+        e.preventDefault();
+
+        error.innerText = "Enter at least one filter";
+        error.style.color = "red";
+
+    } else {
+
+        error.innerText = "";
+
+    }
+
+});
+
+
+// RESET
+document.getElementById("resetBtn").addEventListener("click", function () {
+
+    // CLEAR INPUTS
+    form.querySelectorAll("input").forEach(input => {
+        input.value = "";
+    });
+
+    // RESET SELECTS
+    form.querySelectorAll("select").forEach(select => {
+        select.selectedIndex = 0;
+    });
+
+    // CLEAR ERROR
+    error.innerText = "";
+
+    // REMOVE URL PARAMS
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    fetch(window.location.pathname)
+    .then(response => response.text())
+    .then(data => {
+
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(data, "text/html");
+
+        // TABLE UPDATE
+        document.querySelector(".table-wrapper").innerHTML =
+            doc.querySelector(".table-wrapper").innerHTML;
+
+        // TOTAL STUDENTS UPDATE
+        document.querySelector(".total-count").innerHTML =
+            doc.querySelector(".total-count").innerHTML;
+
+        // PAGINATION INFO UPDATE
+        document.querySelector(".pagination-info").innerHTML =
+            doc.querySelector(".pagination-info").innerHTML;
+
+        // PAGINATION BUTTONS UPDATE
+        document.querySelector(".pagination-buttons").innerHTML =
+            doc.querySelector(".pagination-buttons").innerHTML;
+
+    });
+
+});
+
+</script>
+{% endblock %}

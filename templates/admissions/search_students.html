@@ -1,0 +1,231 @@
+{% extends 'admissions/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Advanced Search & Filter</title>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admissions/css/search_students.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="edit-container">
+
+    <h3>Advanced Search & Filter</h3>
+
+    <form method="GET" class="top-bar" id="filterForm">
+
+    <div class="filter-grid">
+
+    <input type="text" name="search" pattern="^[A-Za-z ]+$" value="{{ request.GET.search }}" placeholder="Search name">
+
+    <input type="text" name="id" pattern="^\d{1,5}$" value="{{ request.GET.id }}" placeholder="Search ID">
+
+    <input type="text" name="phone_no" maxlength="10" pattern="^\d{10}$" value="{{ request.GET.phone_no }}" placeholder="Phone">
+
+    <select name="course_name">
+        <option value="">All Course</option>
+        {% for c in courses %}
+        <option value="{{ c.course_name }}" {% if request.GET.course_name == c.course_name %}selected{% endif %}>
+            {{ c.course_name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <select name="batch">
+        <option value="">All Batch</option>
+        <option value="June 2026" {% if request.GET.batch == "June 2026" %}selected{% endif %}>June 2026</option>
+        <option value="July 2026" {% if request.GET.batch == "July 2026" %}selected{% endif %}>July 2026</option>
+        <option value="August 2026" {% if request.GET.batch == "August 2026" %}selected{% endif %}>August 2026</option>
+    </select>
+
+    <select name="status">
+        <option value="">All Status</option>
+        <option value="Enquiry" {% if request.GET.status == "Enquiry" %}selected{% endif %}>Enquiry</option>
+        <option value="Confirmed" {% if request.GET.status == "Confirmed" %}selected{% endif %}>Confirmed</option>
+        <option value="Enrolled" {% if request.GET.status == "Enrolled" %}selected{% endif %}>Enrolled</option>
+        <option value="Dropped" {% if request.GET.status == "Dropped" %}selected{% endif %}>Dropped</option>
+    </select>
+
+    <select name="payment_status">
+        <option value="">Payment</option>
+        <option value="Paid" {% if request.GET.payment_status == "Paid" %}selected{% endif %}>Paid</option>
+        <option value="Partial" {% if request.GET.payment_status == "Partial" %}selected{% endif %}>Partial</option>
+        <option value="Pending" {% if request.GET.payment_status == "Pending" %}selected{% endif %}>Pending</option>
+    </select>
+
+    </div>
+
+    <div class="form-btn">
+        <p id="filter-error"></p>
+    <button type="button" class="clear-btn" id="resetBtn">
+        Reset
+       </button>
+    <button type="submit">Filter</button>
+    </div>
+
+</form>
+
+<div class="pagination-info result-info">
+        Showing {{ page_obj|length}} results matching your filters
+    </div>
+
+<div class="table-wrapper">
+
+<table>
+<tr>
+    <th>Student</th>
+    <th>Student ID</th>
+    <th>Course</th>
+    <th>Status</th>
+    <th>Fee</th>
+    <th>Joined</th>
+    <th>Profile</th>
+</tr>
+
+{% for student in page_obj %}
+    {% for admission in student.admissions.all %}
+        {% with e=admission.enrollment %}
+        <tr>
+            <td>{{ student.first_name }} {{ student.last_name }}</td>
+
+            <td>STU{{ student.id }}</td>
+
+            <td>{{ admission.course_name }}</td>
+
+            <td>
+                <span class="badge {{ admission.status|lower }}">
+                    {{ admission.status|title }}
+                </span>
+
+            <td>
+                {% if student.pending_amount <= 0 %}
+                
+                <span class="badge paid">
+                    Paid
+                </span>
+
+                {% elif student.total_paid > 0 %}
+
+                <span class="badge partial">
+                    Partial
+                </span>
+
+                {% else %}
+
+                <span class="badge pending">
+                    Pending
+                </span>
+
+                {% endif %}
+
+            </td>
+                
+
+        
+            <td>
+                {% if e %}
+                <span >
+                    {{ e.start_date }}
+                </span>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+
+            <td>
+               <a href="{% url 'view_student' student.id %}"><button>View</button></a>
+
+            </td>
+        </tr>
+        {% endwith %}
+    {% endfor %}
+{% empty %}
+<tr>
+    <td colspan="5">No students found</td>
+</tr>
+{% endfor %}
+</table>
+
+</div>
+
+<script>
+
+const form = document.getElementById("filterForm");
+const error = document.getElementById("filter-error");
+
+
+// FILTER VALIDATION
+form.addEventListener("submit", function(e) {
+
+    let hasValue = false;
+
+    form.querySelectorAll("input, select").forEach(field => {
+
+        if (field.value.trim() !== "") {
+            hasValue = true;
+        }
+
+    });
+
+    if (!hasValue) {
+
+        e.preventDefault();
+
+        error.innerText = "Choose at least one filter";
+        error.style.color = "red";
+
+    } else {
+
+        error.innerText = "";
+
+    }
+
+});
+
+
+// RESET WITHOUT RELOAD
+document.getElementById("resetBtn").addEventListener("click", function () {
+
+    // CLEAR INPUTS
+    form.querySelectorAll("input").forEach(input => {
+        input.value = "";
+    });
+
+    // RESET SELECTS
+    form.querySelectorAll("select").forEach(select => {
+        select.selectedIndex = 0;
+    });
+
+    // CLEAR ERROR
+    error.innerText = "";
+
+    // REMOVE URL PARAMS
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    // FETCH ORIGINAL PAGE
+    fetch(window.location.pathname)
+        .then(response => response.text())
+        .then(data => {
+
+            let parser = new DOMParser();
+
+            let doc = parser.parseFromString(data, "text/html");
+
+            // TABLE RESET
+            document.querySelector(".table-wrapper").innerHTML =
+                doc.querySelector(".table-wrapper").innerHTML;
+
+            // RESULT INFO RESET
+            document.querySelector(".result-info").innerHTML =
+                doc.querySelector(".result-info").innerHTML;
+
+        });
+
+});
+
+</script>
+
+{% endblock %}

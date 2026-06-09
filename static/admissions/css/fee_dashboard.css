@@ -1,0 +1,149 @@
+body{
+    margin-top: 100px;
+    background-color: #f5f5f5;
+}
+
+/* MAIN CONTAINER */
+
+.personal-info{
+    width: 100%;
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: -5px 0 0 rgb(255, 202, 43);
+    box-sizing: border-box;
+}
+
+/* CUSTOM CARD */
+
+.custom-card{
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* SAVE BUTTON */
+
+.save-btn{
+    background: rgb(255, 202, 43);
+    color: rgb(30, 42, 120);
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.save-btn:hover{
+    background: rgb(30, 42, 120);
+    color: rgb(255, 202, 43);
+}
+
+/* SUMMARY CARDS */
+
+.summary-card{
+    text-align: center;
+    padding: 35px 20px;
+    border-radius: 15px;
+    color: white;
+}
+
+.summary-green{
+    background-color: #198754 !important;
+    color: white !important;
+}
+
+.summary-red{
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.summary-blue{
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+.summary-icon{
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.summary-card h5{
+    font-size: 22px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.amount{
+    font-size: 40px;
+    font-weight: bold;
+}
+
+
+/* TABLE */
+
+.table{
+    margin-bottom: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead{
+    background-color: rgb(30, 42, 120);
+    color: white;
+}
+
+.table th{
+    padding: 14px;
+}
+
+.table td{
+    padding: 12px;
+    vertical-align: middle;
+}
+
+
+
+
+/* BUTTON SIZE REDUCE */
+
+.table td .btn-sm{
+    width: auto !important;
+    padding: 4px 8px;
+    font-size: 13px;
+}
+
+/* RECEIPT COLUMN COLLAPSE */
+
+.table td:last-child,
+.table th:last-child{
+    width: 1%;
+    white-space: nowrap;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+    .summary-card{
+        margin-bottom: 15px;
+    }
+
+    .amount{
+        font-size: 32px;
+    }
+
+    .summary-card h5{
+        font-size: 18px;
+    }
+
+    .save-btn{
+        width: 100%;
+    }
+
+    .table{
+        font-size: 14px;
+    }
+
+}

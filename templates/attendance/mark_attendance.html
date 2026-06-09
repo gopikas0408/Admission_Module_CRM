@@ -1,0 +1,548 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %}
+<title>Mark Attendance</title>
+{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'attendance/css/mark_attendance.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+
+<div class="main-content">
+
+    <div class="page-header">
+
+        <h2 class="page-title">
+            Mark Attendance — {{ batch.course.course_name }} {{ batch.batch_name }}
+        </h2>
+
+        <div class="top-actions">
+
+            <div class="search-box mb-3">
+                <i class="fas fa-search" style="color: gray; "></i>
+                <input type="text" id="searchInput" class="form-control"
+                    placeholder="Search Student Name or Student ID...">
+            </div>
+
+            <a href="{% url 'batches_page' %}" class="btn btn-back">
+                Back
+            </a>
+
+            <button class="btn btn-submit" onclick="openAttendanceModal()">
+                Submit Attendance
+            </button>
+
+        </div>
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="stats-card">
+                <p>Total</p>
+                <h2 id="totalCount">0</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card">
+                <p>Present</p>
+                <h2 id="presentCount">0</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card">
+                <p>Absent</p>
+                <h2 id="absentCount">0</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card">
+                <p>Late</p>
+                <h2 id="lateCount">0</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="attendance-table">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Student Name</th>
+                    <th>Student ID</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+
+            <tbody id="studentBody"></tbody>
+
+        </table>
+
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="attendanceModal" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content attendance-modal">
+
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center">
+
+                <h4>Confirm Attendance Submission</h4>
+
+                <div class="summary-box">
+
+                    <div class="summary-card present-card">
+                        <h3 id="modalPresent">0</h3>
+                        <span>Present</span>
+                    </div>
+
+                    <div class="summary-card absent-card">
+                        <h3 id="modalAbsent">0</h3>
+                        <span>Absent</span>
+                    </div>
+
+                    <div class="summary-card late-card">
+                        <h3 id="modalLate">0</h3>
+                        <span>Late</span>
+                    </div>
+
+                </div><br>
+
+                <div class="attendance-overview">
+                    <h5 style="color: rgb(255, 202, 43);">
+                        Attendance Status :
+                        <span id="attendancePercentage"></span>
+                    </h5>
+                </div>
+                <div class="mt-4">
+
+                    <div class="mb-3">
+                        <label class="form-label">Topic Covered *</label>
+                        <input type="text" id="topicCovered" class="form-control" placeholder="Enter topic covered"
+                            value="{{ syllabus_log.topic_covered|default:'' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Duration *</label>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" id="durationHours" class="form-control" placeholder="Hours"
+                                    min="0">
+                            </div>
+
+                            <div class="col-6">
+                                <input type="number" id="durationMinutes" class="form-control" placeholder="Minutes"
+                                    min="0" max="59">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Next Topic</label>
+                        <input type="text" id="nextTopic" class="form-control" placeholder="Enter next topic"
+                            value="{{ syllabus_log.next_topic|default:'' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Trainer Notes</label>
+                        <textarea id="trainerNotes" class="form-control"
+                            rows="3">{{ syllabus_log.trainer_notes|default:'' }}</textarea>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer border-0">
+
+                <button class="btn btn-back" data-bs-dismiss="modal">
+                    Go Back
+                </button>
+
+                <button class="btn btn-submit" onclick="submitAttendance()">
+                    Submit Now
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    console.log("Script Loaded");
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    function getAvatarColor(index) {
+
+        const colors = [
+            "#2563eb",
+            "#16a34a",
+            "#dc2626",
+            "#9333ea",
+            "#ea580c",
+            "#0891b2"
+        ];
+
+        return colors[index % colors.length];
+    }
+
+    let attendanceData = [];
+
+    const students = [
+        {% for enrollment in enrollments %}
+    {
+        enrollment: {{ enrollment.id }},
+        student_name: "{{ enrollment.student.first_name }} {{ enrollment.student.last_name }}",
+            student_id: "STU{{ enrollment.student.id }}",
+                photo: {% if enrollment.student.photo %} "{{ enrollment.student.photo.url }}"{% else %} null{% endif %},
+        status: "{{ attendance_map|get_item:enrollment.id|default:'Present' }}",
+            remarks: "{{ remarks_map|get_item:enrollment.id|default:'' |escapejs }}"
+    },
+    {% endfor %}
+];
+
+    function loadStudents() {
+
+        const tbody = document.getElementById('studentBody');
+        tbody.innerHTML = '';
+        attendanceData = [];
+
+        document.getElementById('totalCount').innerText = students.length;
+
+        students.forEach((student, index) => {
+
+            attendanceData.push({
+                enrollment: student.enrollment,
+                status: student.status,
+                remarks: student.remarks || "",
+            });
+
+            tbody.innerHTML += `
+        <tr class="row-${index}">
+
+            <td>${index + 1}</td>
+
+            <td>
+              <div class="student-info">
+
+                ${student.photo
+                    ?
+                    `<img src="${student.photo}" class="student-avatar-img" alt="Student">`
+                    :
+                    `<div class="student-avatar avatar-${index} ">
+                ${student.student_name
+                        .split(' ')
+                        .map(word => word[0])
+                        .join('')
+                        .substring(0, 2)
+                        .toUpperCase()}
+                </div>`
+                }
+
+                <span>${student.student_name}</span>
+
+                </div>
+            </td>
+
+            <td>${student.student_id}</td>
+
+            <td>
+
+                <button class="status-btn present ${student.status === 'Present' ? 'active' : ''}"
+                    onclick="setStatus(${index},'Present')">Present</button>
+
+                <button class="status-btn absent ${student.status === 'Absent' ? 'active' : ''}"
+                    onclick="setStatus(${index},'Absent')">Absent</button>
+
+                <button class="status-btn late ${student.status === 'Late' ? 'active' : ''}"
+                    onclick="setStatus(${index},'Late')">Late</button>
+
+            </td>
+
+            <td>
+                <input type="text"
+                    id="remark-${index}"
+                    class="form-control remarks-input"
+                    value="${student.remarks || ''}"
+                    placeholder="${student.status === 'Present' ? 'Optional' : 'Remarks required'}"
+                    onchange="setRemark(${index},this.value)">
+            </td>
+
+        </tr>`;
+        });
+
+        updateCounts();
+    }
+
+    function setStatus(index, status) {
+
+        // update data
+        attendanceData[index].status = status;
+
+        // get row buttons
+        const row = document.querySelector(`.row-${index}`);
+        const buttons = row.querySelectorAll('.status-btn');
+
+        // remove active from all buttons in that row
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // add active to clicked one
+        let activeBtn;
+
+        if (status === 'Present') {
+            activeBtn = row.querySelector('.present');
+        } else if (status === 'Absent') {
+            activeBtn = row.querySelector('.absent');
+        } else if (status === 'Late') {
+            activeBtn = row.querySelector('.late');
+        }
+
+
+        activeBtn.classList.add('active');
+
+
+        const remarkInput = document.getElementById(`remark-${index}`);
+
+        if (status === 'Present') {
+            remarkInput.value = '';
+            remarkInput.placeholder = 'Optional';
+        } else {
+            remarkInput.value = attendanceData[index].remarks || '';
+            remarkInput.placeholder = 'Remarks Required';
+        }
+
+        updateCounts();
+    }
+
+    function setRemark(index, value) {
+        attendanceData[index].remarks = value;
+    }
+
+    function updateCounts() {
+
+        let present = 0, absent = 0, late = 0;
+
+        attendanceData.forEach(d => {
+            if (d.status === 'Present') present++;
+            if (d.status === 'Absent') absent++;
+            if (d.status === 'Late') late++;
+        });
+
+        document.getElementById('presentCount').innerText = present;
+        document.getElementById('absentCount').innerText = absent;
+        document.getElementById('lateCount').innerText = late;
+    }
+
+    async function submitAttendance() {
+
+        for (let data of attendanceData) {
+
+            if (
+                (data.status === 'Absent' || data.status === 'Late') &&
+                (!data.remarks || data.remarks.trim() === '')
+            ) {
+                alert("Remarks required for Absent / Late");
+                return;
+            }
+        }
+
+        const topicCovered =
+            document.getElementById("topicCovered").value;
+
+        const hours =
+            parseInt(document.getElementById("durationHours").value) || 0;
+
+        const minutes =
+            parseInt(document.getElementById("durationMinutes").value) || 0;
+
+        const duration = (hours * 60) + minutes;
+
+        const nextTopic =
+            document.getElementById("nextTopic").value;
+
+        const trainerNotes =
+            document.getElementById("trainerNotes").value;
+
+        if (!topicCovered.trim()) {
+            alert("Topic Covered is required");
+            return;
+        }
+
+        if (duration <= 0) {
+            alert("Enter valid duration");
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                "/api/attendance/bulk/",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrftoken
+                    },
+                    body: JSON.stringify({
+                        batch: {{ batch.id }},
+                attendance: attendanceData,
+                syllabus_log: {
+                topic_covered: topicCovered,
+                duration: duration,
+                next_topic: nextTopic,
+                trainer_notes: trainerNotes
+            }
+            })
+    }
+    );
+
+    const result = await response.json();
+
+    console.log(result);
+
+    if (response.ok) {
+        alert("Attendance submitted successfully");
+
+        window.location.href = "{% url 'attendance_report' %}";
+
+    } else {
+        alert(JSON.stringify(result));
+    }
+
+} catch (error) {
+        console.error(error);
+    }
+}
+
+    function searchStudents(searchText) {
+
+        searchText = searchText.toLowerCase();
+
+        document.querySelectorAll('#studentBody tr').forEach(row => {
+
+            const studentName =
+                row.children[1].innerText.toLowerCase();
+
+            const studentId =
+                row.children[2].innerText.toLowerCase();
+
+            if (
+                studentName.includes(searchText) ||
+                studentId.includes(searchText)
+            ) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    loadStudents();
+
+    document.querySelectorAll('.student-avatar').forEach((el, index) => {
+        el.style.background = getAvatarColor(index);
+    });
+
+    document.getElementById('searchInput')
+        .addEventListener('input', function () {
+
+            searchStudents(this.value);
+        });
+
+
+    document.getElementById('attendanceModal')
+        .addEventListener('show.bs.modal', function () {
+
+            document.getElementById('modalPresent').innerText =
+                document.getElementById('presentCount').innerText;
+
+            document.getElementById('modalAbsent').innerText =
+                document.getElementById('absentCount').innerText;
+
+            document.getElementById('modalLate').innerText =
+                document.getElementById('lateCount').innerText;
+        });
+
+    function openAttendanceModal() {
+
+        for (let data of attendanceData) {
+            if (
+                (data.status === 'Absent' || data.status === 'Late') &&
+                (!data.remarks || data.remarks.trim() === '')
+            ) {
+                alert("Remarks required for Absent / Late");
+                return;
+            }
+        }
+
+        updateCounts();
+
+        document.getElementById('modalPresent').innerText =
+            document.getElementById('presentCount').innerText;
+
+        document.getElementById('modalAbsent').innerText =
+            document.getElementById('absentCount').innerText;
+
+        document.getElementById('modalLate').innerText =
+            document.getElementById('lateCount').innerText;
+
+        const modal = new bootstrap.Modal(
+            document.getElementById('attendanceModal')
+        );
+
+        modal.show();
+    }
+
+    const percentage =
+        Math.round(
+            (parseInt(document.getElementById('presentCount').innerText)
+                / students.length) * 100
+        );
+
+    document.getElementById('attendancePercentage').innerText =
+        percentage + "% Present";
+
+</script>
+
+{% endblock %}

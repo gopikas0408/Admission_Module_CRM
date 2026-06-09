@@ -1,0 +1,405 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    position: relative;
+    top: 40px;
+}
+
+.edit-container {
+    width: 95%;
+    margin: 70px auto 20px auto; 
+
+}
+
+
+button {
+    background: rgb(30, 42, 120);
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: rgb(255, 202, 43);
+    color: rgb(30, 42, 120);
+    box-shadow: 0px 4px 10px rgb(255, 202, 43);
+}
+
+/* Cards */
+.card {
+    background: white;
+    padding: 20px;
+    margin-top: 15px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.user-card {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.enquiry {
+    color: #d97706;
+    background-color: #fef3c7;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.confirmed {
+    color: #2563eb;
+    background-color: #dbeafe;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.enrolled {
+    color: green;
+    background-color: #d4f5e9;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.dropped {
+    color: red;
+    background-color: #fee2e2;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.line {
+    width: 1px;
+    height: 220px;
+    background: gray;
+}
+
+.user-left,
+.user-middle,
+.user-right {
+    flex: 1;
+}
+
+.user-right {
+    border: 1px solid gray;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.user-left,
+.user-middle,
+.user-right i {
+    color: #152347;
+}
+
+.notes i {
+    color: #d97706;
+}
+
+/* Stats */
+.stats {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.box {
+    flex: 1;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.text {
+    margin-left: 20px;
+}
+
+.total {
+    background: #eef;
+    color: #152347;
+}
+
+.paid {
+    background: #e0f7e9;
+    color: green;
+}
+
+.pending {
+    background: #ffe5e5;
+    color: red;
+}
+
+.trans {
+    background: #eef3ff;
+    color: #2563eb;
+}
+
+.total,
+.paid,
+.pending,
+.trans {
+    display: flex;
+}
+
+.fees-icon1 {
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    background: rgb(189, 189, 218);
+    border-radius: 50%;
+    align-content: center;
+}
+
+.fees-icon2 {
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    background: #b8d8c4;
+    border-radius: 50%;
+    align-content: center;
+}
+
+.fees-icon3 {
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    background: #dab8b8;
+    border-radius: 50%;
+    align-content: center;
+}
+
+.fees-icon4 {
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    background: #b0bcd6;
+    border-radius: 50%;
+    align-content: center;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.success {
+    color: green;
+}
+
+/* Bottom */
+.bottom {
+    display: flex;
+    gap: 15px;
+}
+
+.notes {
+    flex: 1;
+    border: 1px solid gray;
+    padding: 5px 10px;
+}
+
+.notes-list {
+    padding: 10px;
+    background: #fff7d6;
+    border-radius: 10px;
+}
+
+
+.docs {
+    flex: 2;
+    border: 1px solid gray;
+    padding: 0 15px;
+    border-radius: 10px;
+}
+
+.doc-list {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.docs i {
+    color: #2563eb;
+}
+
+.doc-list i {
+    color: red;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.proof {
+    display: flex;
+    border: 1px solid gray;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.icon {
+    background-color: #ffe5e5;
+}
+
+.icon i {
+    font-size: 25px;
+    position: relative;
+    top: 5px;
+}
+
+@media (max-width: 550px) {
+
+    body {
+        margin-top: 15px;
+    }
+
+    .container {
+        width: 95%;
+    }
+
+    /* USER CARD */
+    .user-card {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .user {
+        text-align: center;
+    }
+
+    .user img {
+        width: 140px !important;
+        height: 140px !important;
+    }
+
+    .line {
+        display: none;
+    }
+
+    .user-left {
+        position: relative;
+        left: 0;
+    }
+
+    .user-middle {
+        position: relative;
+        left: 0;
+    }
+
+    .user-left,
+    .user-middle,
+    .user-right {
+        width: 100%;
+    }
+
+    .user-right {
+        margin-right: 0;
+        left: 0;
+        padding: 15px;
+        box-sizing: border-box;
+    }
+
+    /* STATS */
+    .stats {
+        flex-direction: column;
+    }
+
+    .box {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .text {
+        position: relative;
+        left: 60px;
+    }
+
+
+    .text span {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* PAYMENT TABLE */
+    .card {
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 500px;
+    }
+
+    /* NOTES + DOCS */
+    .bottom {
+        flex-direction: column;
+    }
+
+    .doc-list {
+        flex-direction: column;
+    }
+
+    .proof {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* TEXT */
+    h3 {
+        font-size: 18px;
+    }
+
+    .notes {
+        padding: 10px 10px;
+    }
+
+    .docs {
+        padding: 10px 10px;
+    }
+
+    .table-wrapper::-webkit-scrollbar {
+        height: 2px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-track {
+        background: #e5e5e5;
+        border-radius: 10px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+        background: rgb(255, 202, 43);
+        border-radius: 10px;
+    }
+
+    p,
+    td,
+    th,
+    a,
+    span {
+        font-size: 14px;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}

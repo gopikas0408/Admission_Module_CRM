@@ -1,0 +1,39 @@
+
+.container{
+    width: 500px;
+    margin: 0 auto;
+    padding: 25px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    top: 210px;
+
+}
+
+button{
+    width: 35%;
+    padding: 10px;
+    background-color: orangered;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+   
+}
+@media(max-width: 550px) {
+    
+    h1{
+        font-size: 18px;
+    }
+
+    .container {
+        width: 80%;
+        padding: 5px;
+        top: 150px;
+    }
+    button {
+        width: 100%;
+        padding: 8px;
+    }
+}   

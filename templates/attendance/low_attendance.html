@@ -1,0 +1,662 @@
+{% extends 'attendance/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'attendance/css/low_attendance.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<div class="main-content">
+
+    <div class="low-attendance-page">
+
+        <!-- TOP HEADER -->
+
+        <div class="topbar-section">
+
+            <h2 class="page-title">
+
+                Low Attendance Alerts
+
+            </h2>
+
+        </div>
+        <div class="filter-container">
+
+            <input type="text" id="studentNameFilter" placeholder="Student Name" class="filter-input">
+
+            <input type="text" id="courseFilter" placeholder="Course" class="filter-input">
+
+            <input type="text" id="batchFilter" placeholder="Batch" class="filter-input">
+
+            <input type="text" id="percentageFilter" placeholder="Attendance %" class="filter-input">
+
+            <button id="clearFilters" class="clear-btn">
+
+                <i class="bi bi-x-circle"></i>
+
+                Clear
+
+            </button>
+
+            <button id="showAllBtn" class="clear-btn">
+
+                Search All
+
+            </button>
+
+        </div>
+
+        <!-- ALERT SECTION -->
+
+        <div class="row g-4">
+
+            <!-- CRITICAL ALERTS -->
+
+            <div class="col-lg-6">
+
+                <div class="attendance-card critical-card">
+
+                    <div class="attendance-card-header">
+
+                        <div class="header-left critical-text">
+
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+
+                            <span>
+
+                                Critical Alerts
+
+                            </span>
+
+                        </div>
+
+                        <div class="header-right critical-percent-label">
+
+                            Below 60%
+
+                        </div>
+
+                    </div>
+
+                    {% for student in low_attendance_students %}
+
+                    {% if student.attendance_percentage < 60 %} <div
+                        class="student-warning-card critical-warning-card low-card"
+                        data-name="{{ student.student.first_name|lower }} {{ student.student.last_name|lower }}"
+                        data-course="{{ student.course.course_name|lower }}"
+                        data-batch="{{ student.batch.batch_name|lower }}"
+                        data-percentage="{{ student.attendance_percentage }}">
+
+                        <div class="student-left-section">
+
+                            <div class="warning-icon critical-icon">
+
+                                <i class="bi bi-cone-striped"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h5>
+
+                                    {{ student.student.first_name }}
+                                    {{ student.student.last_name }}
+                                </h5>
+
+                                <p>
+                                    {{ student.course.course_name }}
+                                    ·
+                                    {{ student.batch.batch_name }}
+                                    · Total Absences:
+                                    {{ student.total_absences }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <div class="student-right-section">
+
+                            <h3 class="critical-score">
+
+                                {{ student.attendance_percentage }}%
+
+                            </h3>
+
+                            <div class="action-buttons">
+
+                                <a href="{% url 'send_sms_notification' student.id %}"
+                                    class="mail-btn critical-mail-btn">
+
+                                    <i class="bi bi-chat-left-text-fill"></i>
+
+                                </a>
+
+                                <a href="{% url 'send_low_attendance_email' student.id %}"
+                                    class="mail-btn critical-mail-btn">
+
+                                    <i class="bi bi-envelope-fill"></i>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                </div>
+
+                {% endif %}
+
+                {% empty %}
+
+                <div class="text-center py-4">
+
+                    <p>No Critical Alerts Found</p>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- WARNING ALERTS -->
+
+        <div class="col-lg-6">
+
+            <div class="attendance-card warning-card">
+
+                <div class="attendance-card-header">
+
+                    <div class="header-left warning-text">
+
+                        <i class="bi bi-exclamation-circle-fill"></i>
+
+                        <span>
+
+                            Warning Alerts
+
+                        </span>
+
+                    </div>
+
+                    <div class="header-right warning-percent-label">
+
+                        60% - 75%
+
+                    </div>
+
+                </div>
+
+                {% for student in low_attendance_students %}
+
+                {% if student.attendance_percentage >= 60 and student.attendance_percentage <= 75 %} <div
+                    class="student-warning-card warning-warning-card low-card"
+                    data-name="{{ student.student.first_name|lower }} {{ student.student.last_name|lower }}"
+                    data-course="{{ student.course.course_name|lower }}"
+                    data-batch="{{ student.batch.batch_name|lower }}"
+                    data-percentage="{{ student.attendance_percentage }}">
+                    <div class="student-left-section">
+
+                        <div class="warning-icon warning-icon-bg">
+
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h5>
+
+                                {{ student.student.first_name }}
+                                {{ student.student.last_name }}
+
+                            </h5>
+
+                            <p>
+
+                                {{ student.course.course_name }}
+                                ·
+                                {{ student.batch.batch_name }}
+                                · Total Absences:
+                                {{ student.total_absences }}
+
+
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="student-right-section">
+
+                        <h3 class="warning-score">
+
+                            {{ student.attendance_percentage }}%
+
+                        </h3>
+
+                        <div class="action-buttons">
+
+                            <a href="{% url 'send_sms_notification' student.id %}" class="mail-btn warning-mail-btn">
+
+                                <i class="bi bi-chat-left-text-fill"></i>
+
+                            </a>
+
+                            <a href="{% url 'send_low_attendance_email' student.id %}"
+                                class="mail-btn warning-mail-btn">
+
+                                <i class="bi bi-envelope-fill"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+            </div>
+
+            {% endif %}
+
+            {% empty %}
+
+            <div class="text-center py-4">
+
+                <p>No Warning Alerts Found</p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+<div id="successMessage" class="alert alert-success d-none mb-3">
+</div>
+
+<!-- BULK NOTIFICATION -->
+
+<div class="bulk-notification-card">
+
+    <div class="bulk-top">
+
+        <div>
+
+            <h4>
+
+                Bulk Notifications
+
+            </h4>
+
+        </div>
+
+        <p>
+
+            Send SMS / Email to all alert students
+
+        </p>
+
+    </div>
+
+    
+    <div class="bulk-buttons">
+
+        <button class="btn bulk-sms-btn" onclick="sendSMSAll()">
+
+            <i class="bi bi-chat-left-text-fill"></i>
+
+            Send SMS To All
+
+        </button>
+
+        <button class="btn bulk-email-btn" onclick="sendEmailAll()">
+
+            <i class="bi bi-envelope-fill"></i>
+
+            Send Email To All
+
+        </button>
+
+        <button class="btn bulk-report-btn" onclick="sendMonthlyReport()">
+
+            <i class="bi bi-file-earmark-text-fill"></i>
+
+            Send Monthly Report
+
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+
+
+    function sendEmailAll() {
+
+        let msg = document.getElementById(
+            "successMessage"
+        );
+
+        msg.classList.remove(
+            "d-none"
+        );
+
+        msg.innerHTML =
+            "📧 Sending Emails... Please Wait";
+
+        fetch("/api/send-email-all/")
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                msg.innerHTML =
+                    data.message;
+
+            })
+
+            .catch(error => {
+
+                msg.innerHTML =
+                    "❌ Email Sending Failed";
+
+            });
+
+    }
+
+    function sendSMSAll() {
+
+        let msg = document.getElementById(
+            "successMessage"
+        );
+
+        msg.classList.remove(
+            "d-none"
+        );
+
+        msg.innerHTML =
+            "📱 Sending SMS... Please Wait";
+
+        fetch("/api/send-sms-all/")
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                msg.innerHTML =
+                    data.message;
+
+            })
+
+            .catch(error => {
+
+                msg.innerHTML =
+                    "❌ SMS Sending Failed";
+
+            });
+
+    }
+
+    function sendMonthlyReport() {
+
+        let msg = document.getElementById(
+            "successMessage"
+        );
+
+        msg.classList.remove(
+            "d-none"
+        );
+
+        msg.innerHTML =
+            "📊 Generating Monthly Reports... Please Wait";
+
+       fetch("/api/send-monthly-report/")
+            .then(response => response.json())
+
+            .then(data => {
+
+                msg.innerHTML =
+                    data.message;
+
+            })
+
+            .catch(error => {
+
+                msg.innerHTML =
+                    "❌ Monthly Report Sending Failed";
+
+            });
+
+    }
+
+    document.querySelectorAll(".mail-btn").forEach(button => {
+
+        button.addEventListener("click", function (e) {
+
+            e.preventDefault();
+
+            let msg = document.getElementById(
+                "successMessage"
+            );
+
+            msg.classList.remove(
+                "d-none"
+            );
+
+            if (this.href.includes("send_sms")) {
+
+                msg.innerHTML =
+                    "📱 Sending SMS... Please Wait";
+
+            } else {
+
+                msg.innerHTML =
+                    "📧 Sending Email... Please Wait";
+
+            }
+
+            fetch(this.href)
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    msg.innerHTML =
+                        data.message;
+
+                })
+
+                .catch(error => {
+
+                    msg.innerHTML =
+                        "❌ Notification Sending Failed";
+
+                });
+
+        });
+
+    });
+    //filter 
+    function applyFilters() {
+
+        const name =
+            document.getElementById(
+                "studentNameFilter"
+            ).value.toLowerCase().trim();
+        const course =
+            document.getElementById(
+                "courseFilter"
+            ).value.toLowerCase().trim();
+
+        const batch =
+            document.getElementById(
+                "batchFilter"
+            ).value.toLowerCase().trim();
+
+        const percentageValue =
+            document.getElementById(
+                "percentageFilter"
+            ).value.trim();
+
+        document.querySelectorAll(
+            ".low-card"
+        ).forEach(card => {
+
+            const attendance =
+                parseFloat(
+                    card.dataset.percentage
+                );
+
+            const percentageMatch =
+
+                percentageValue === ""
+
+                ||
+
+                attendance <= parseFloat(percentageValue);
+
+            const nameMatch =
+
+                name === ""
+
+                ||
+
+                card.dataset.name
+                    .toLowerCase()
+                    .startsWith(name);
+
+            const courseMatch =
+
+                course === ""
+
+                ||
+
+                card.dataset.course
+                    .toLowerCase()
+                    .includes(course);
+
+            const batchMatch =
+
+                batch === ""
+
+                ||
+
+                card.dataset.batch
+                    .toLowerCase()
+                    .includes(batch);
+
+            card.style.display =
+
+                (nameMatch &&
+                    courseMatch &&
+                    batchMatch &&
+                    percentageMatch)
+
+                    ? "flex"
+                    : "none";
+
+        });
+
+    }
+
+    /* Select all btn */
+    document.getElementById(
+        "showAllBtn"
+    ).addEventListener(
+        "click",
+        function () {
+
+            document.querySelectorAll(
+                ".filter-input"
+            ).forEach(input => {
+
+                input.value = "";
+
+            });
+
+            document.querySelectorAll(
+                ".filter-select"
+            ).forEach(select => {
+
+                select.value = "";
+
+            });
+
+            applyFilters();
+
+        }
+    );
+
+    /* EVENTS */
+
+    document.getElementById(
+        "studentNameFilter"
+    ).addEventListener(
+        "keyup",
+        applyFilters
+    );
+    document.getElementById(
+        "courseFilter"
+    ).addEventListener(
+        "keyup",
+        applyFilters
+    );
+
+    document.getElementById(
+        "batchFilter"
+    ).addEventListener(
+        "keyup",
+        applyFilters
+    );
+
+    document.getElementById(
+        "percentageFilter"
+    ).addEventListener(
+        "keyup",
+        applyFilters
+    );
+
+    /* CLEAR */
+
+    document.getElementById(
+        "clearFilters"
+    ).addEventListener(
+        "click",
+        function () {
+
+            document.getElementById(
+                "studentNameFilter"
+            ).value = "";
+
+            document.getElementById(
+                "courseFilter"
+            ).value = "";
+
+            document.getElementById(
+                "batchFilter"
+            ).value = "";
+
+            document.getElementById(
+                "percentageFilter"
+            ).value = "";
+
+            applyFilters();
+
+        }
+    );
+</script>
+
+</div>
+{% endblock %}

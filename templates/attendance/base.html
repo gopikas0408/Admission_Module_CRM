@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}
+    <title>Student Attendance System</title>
+    {% endblock title %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'attendance/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    {% block extra_css %}
+    {% endblock extra_css %}
+</head>
+
+<body>
+
+    <div class="sidebar" id="navLinks">
+
+        <h4 class="logo-heading">
+            CSC CRM
+        </h4>
+
+        <a href="{% url 'dashboard' %}">
+            <i class="fa-solid fa-chart-pie"></i>
+            Dashboard
+        </a>
+
+        <a href="{% url 'batches_page' %}"
+            class="{% if request.resolver_match.url_name == 'batches_page' %}active{% endif %}">
+            <i class="fa-solid fa-layer-group"></i>
+            Batches
+        </a>
+
+        <!-- <a href="{#' %}"
+           
+                <i class="fa-solid fa-square-check"></i>
+                Mark Attendance
+            </a> -->
+
+        <a href="{% url 'attendance_report' %}"
+            class="{% if request.resolver_match.url_name == 'attendance_report' %}active{% endif %}">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            Attendance History
+        </a>
+
+        <a href="{% url 'absent_tracker' %}"
+            class="{% if request.resolver_match.url_name == 'absent_tracker' %}active{% endif %}">
+            <i class="fa-solid fa-user-xmark"></i>
+            Absent Tracker
+        </a>
+
+        <a href="{% url 'low_attendance_alerts' %}"
+            class="{% if request.resolver_match.url_name == 'low_attendance_alerts' %}active{% endif %}">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Low Attendance Alerts
+        </a>
+        <a href="{% url 'reports' %}"
+            class="{% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
+            <i class="fa-solid fa-chart-line"></i>
+            Reports & Analytics
+        </a>
+
+        <a href="#">
+            <i class="fa-solid fa-book"></i>
+            Syllabus Log
+        </a>
+
+    </div>
+
+
+
+
+    <div class="menu-toggle" id="menuToggle">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+
+    </nav>
+
+
+    {% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+        <div class="alert 
+                {% if message.tags == 'success' %}
+                    alert-success
+                {% elif message.tags == 'error' %}
+                    alert-danger
+                {% endif %}
+            ">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const toggle =
+                document.getElementById("menuToggle");
+
+            const sidebar =
+                document.getElementById("navLinks");
+
+            toggle.addEventListener("click", () => {
+
+                sidebar.classList.toggle("show");
+
+            });
+
+        });
+
+    </script>
+
+    <script>
+
+        setTimeout(() => {
+
+            const alerts = document.querySelectorAll(".alert");
+
+            alerts.forEach(alert => {
+
+                alert.style.display = "none";
+
+            });
+
+        }, 3000);
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+</body>
+
+
+
+</html>

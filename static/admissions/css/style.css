@@ -1,0 +1,173 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* NAVBAR */
+
+.navbar{
+    background-color: rgb(30, 42, 120);
+    color: white;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 15px 30px;
+
+    position: fixed;
+    top: 0;
+    width: 100%;
+
+    z-index: 1000;
+}
+
+
+
+.logo{
+    font-size: 28px;
+    font-weight: bold;
+    color: rgb(255, 202, 43);
+    text-decoration: none;
+}
+
+.logo:hover{
+    color:rgb(255, 202, 43) ;
+}
+
+/* NAV LINKS */
+
+
+.nav-links{
+    display: flex;
+    align-items: center;
+    gap: 25px;
+
+    list-style: none;
+}
+
+.nav-links li a{
+    text-decoration: none;
+    color: white;
+    font-size: 17px;
+
+    transition: 0.3s;
+}
+
+.nav-links li a:hover{
+    color: rgb(255, 202, 43);
+}
+
+.nav-links li a.active{
+    color: rgb(255, 202, 43);
+    font-weight: bold;
+    border-bottom: 2px solid rgb(255, 202, 43);
+    padding-bottom: 5px;
+}
+
+.fa-house{
+    font-size: 22px;
+}
+
+/* MENU BUTTON */
+
+.menu-toggle{
+    display: none;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar{
+    width: 5px;
+}
+
+::-webkit-scrollbar-thumb{
+    background-color: rgb(255, 202, 43);
+}
+
+::-webkit-scrollbar-track{
+    background-color: rgb(30, 42, 120);
+}
+
+
+.message-container{
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 2000;
+}
+
+.alert{
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: bold;
+    min-width: 250px;
+
+    animation: fadeIn 0.4s ease;
+}
+
+.alert-success{
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger{
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* MOBILE VIEW */
+
+@media (max-width: 768px){
+
+    .menu-toggle{
+        display: block;
+    }
+
+    .nav-links{
+        display: none;
+
+        flex-direction: column;
+
+        position: absolute;
+
+        top: 70px;
+        right: 0;
+
+        background-color: rgb(30, 42, 120);
+
+        width: 220px;
+
+        padding: 20px;
+
+        text-align: left;
+    }
+
+    .nav-links.show{
+        display: flex;
+    }
+
+    .navbar{
+        padding: 15px 20px;
+    }
+
+}

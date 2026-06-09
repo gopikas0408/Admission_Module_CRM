@@ -1,0 +1,75 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Student Attendance - Batches</title>
+{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'attendance/css/dashboard.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="main-content">
+
+    <div class="topbar">
+        <input type="text" placeholder="Search here...">
+
+        <div class="profile">
+            <img src="avatar.jpg">
+            <div>
+                <h4>Admin</h4>
+                <p>Institute Admin</p>
+            </div>
+        </div>
+    </div>
+
+    <h1>Attendance Dashboard</h1>
+
+    <div class="stats-grid">
+
+        <div class="card">
+            <div class="card-head">
+                <h3>Total Students</h3>
+                <i class="fa-solid fa-user-graduate"></i>
+            </div>
+
+            <h2>520</h2>
+            <p>+12% This Month</p>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <h3>Present Today</h3>
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <h2>480</h2>
+            <p>92% Attendance</p>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <h3>Absent Today</h3>
+                <i class="fa-solid fa-circle-xmark"></i>
+            </div>
+
+            <h2>40</h2>
+            <p>-3% Compared Yesterday</p>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <h3>Staff Present</h3>
+                <i class="fa-solid fa-users"></i>
+            </div>
+
+            <h2>35</h2>
+            <p>Full Staff Available</p>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

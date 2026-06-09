@@ -1,0 +1,438 @@
+{% extends 'attendance/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'attendance/css/attendance_report.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+
+    <h2 class="page-title">Attendance Report</h2>
+
+    <form method="GET" class="filter-form">
+
+        <div class="filter-grid">
+
+            <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search by Name or ID"
+                class="form-control">
+
+            <input type="date" name="from_date" value="{{ request.GET.from_date }}" class="form-control">
+
+            <input type="date" name="to_date" value="{{ request.GET.to_date }}" class="form-control">
+
+            <select name="status" class="form-select">
+
+                <option value="">All Status</option>
+
+                <option value="Present" {% if request.GET.status|stringformat:"s" == "Present" %}selected{% endif %}>
+                    Present
+                </option>
+
+                <option value="Absent" {% if request.GET.status|stringformat:"s" == "Absent" %}selected{% endif %}>
+                    Absent
+                </option>
+
+                <option value="Late" {% if request.GET.status|stringformat:"s" == "Late" %}selected{% endif %}>
+                    Late
+                </option>
+
+            </select>
+
+            <select name="batch" class="form-select">
+
+                <option value="">All Batches</option>
+
+                {% for batch in filter.form.batch.field.queryset %}
+                <option value="{{ batch.id }}" {% if request.GET.batch == batch.id|stringformat:'s' %} selected {% endif %}>
+                    {{ batch.batch_name }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+            <select name="course_name" class="form-select">
+                <option value="">All Courses</option>
+
+                {% for course in courses %}
+                <option value="{{ course.course_name }}">
+                    {{ course.course_name }}
+                </option>
+                {% endfor %}
+            </select>
+
+        </div>
+
+        <div class="filter-actions">
+            <button type="button" class="clear-btn btn btn-outline-secondary" id="resetBtn">
+                Reset
+            </button>
+
+            <button type="submit" class="btn btn-primary">
+                Apply Filter
+            </button>
+        </div>
+
+    </form>
+
+    <form method="GET"
+      action="{% url 'attendance_export' %}"
+      class="download-form"
+      onsubmit="return validateFormat()">
+
+        <div class="format-box">
+
+            <select name="format" id="format">
+                <option value="">Select format</option>
+                <option value="excel">Download Excel</option>
+                <option value="pdf">Download PDF</option>
+            </select>
+
+            <p id="error-msg"></p>
+
+        </div>
+
+        <button type="submit" class="down">
+            Download
+        </button>
+
+    </form>
+
+    <div class="report-card">
+
+        <div class="table-responsive">
+
+            <table class="table">
+
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Student Name</th>
+                        <th>Student ID</th>
+                        <th>Course</th>
+                        <th>Batch</th>
+                        <th>Status</th>
+                        <!-- <th>Remarks</th> -->
+                        <th>Marked By</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for record in records %}
+                    <tr>
+
+                        <td>{{ record.attendance_date }}</td>
+
+                        <td>
+                            <div class="student-info">
+
+                                {% if record.enrollment.student.photo %}
+
+                                <img src="{{ record.enrollment.student.photo.url }}" class="student-avatar-img"
+                                    alt="Student">
+
+                                {% else %}
+
+                                <div class="student-avatar">
+                                    {{ record.enrollment.student.first_name|slice:":1" }}{{ record.enrollment.student.last_name|slice:":1" }}
+                                </div>
+
+                                {% endif %}
+
+                                <span>
+                                    <a href="#" class="student-detail-btn" data-id="{{ record.enrollment.student.id }}">
+                                        {{ record.enrollment.student.first_name }}
+                                        {{ record.enrollment.student.last_name }}
+                                    </a>
+                                </span>
+
+                            </div>
+                        </td>
+
+                        <td>STU{{ record.enrollment.student.id }}</td>
+
+                        <td>{{ record.enrollment.course.course_name }}</td>
+
+                        <td>{{ record.batch.batch_name }}</td>
+
+                        <td>
+
+                            {% if record.status == "Present" %}
+                            <span class="badge-present">Present</span>
+
+                            {% elif record.status == "Absent" %}
+                            <span class="badge-absent">Absent</span>
+
+                            {% else %}
+                            <span class="badge-late">Late</span>
+                            {% endif %}
+
+                        </td>
+
+                        <!-- <td>{{ record.remarks|default:"-" }}</td> -->
+                        <td>{{ record.trainer }}</td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="5" class="empty-row">
+                            No attendance records found
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <!-- NEW MODAL START -->
+
+            <div id="attendanceModal" class="modal">
+
+                <div class="modal-content">
+
+                    <span id="closeModal">&times;</span>
+
+                    <div class="student-header">
+
+                        <img id="studentPhoto" class="student-photo-modal" style="display:none;">
+
+                        <div class="student-avatar-modal" id="studentAvatar">
+                            SN
+                        </div>
+
+                        <div>
+                            <h3 id="studentName"></h3>
+                            <p id="studentInfo"></p>
+                        </div>
+
+                    </div>
+
+                    <div class="stats">
+
+                        <div>
+                            <h2 id="presentCount">0</h2>
+                            <p>Present</p>
+                        </div>
+
+                        <div>
+                            <h2 id="absentCount">0</h2>
+                            <p>Absent</p>
+                        </div>
+
+                        <div>
+                            <h2 id="lateCount">0</h2>
+                            <p>Late</p>
+                        </div>
+
+                    </div>
+
+                    <h4>
+                        Attendance Percentage :
+                        <span id="attendancePercent">0</span>%
+                    </h4>
+
+                    <hr>
+
+                    <h4>Attendance Timeline</h4>
+
+                    <div id="timeline"></div>
+
+                </div>
+
+            </div>
+
+            <!-- NEW MODAL END -->
+
+        </div> <!-- table-responsive -->
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+    document.getElementById("resetBtn").addEventListener("click", function () {
+
+        // go to same page WITHOUT GET params
+        window.location.href = window.location.pathname;
+
+    });
+</script>
+
+<script>
+    function validateFormat() {
+
+        const format = document.getElementById("format").value;
+        const error = document.getElementById("error-msg");
+
+        if (!format) {
+            error.innerText = "Please select a format (Excel or PDF)";
+            error.style.color = "red";
+            return false; // stop form submit
+        }
+
+        error.innerText = "";
+        return true; // allow submit
+    }
+
+
+    
+
+</script>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const modal = document.getElementById("attendanceModal");
+        const closeBtn = document.getElementById("closeModal");
+
+        closeBtn.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        document.querySelectorAll(".student-detail-btn").forEach(btn => {
+
+            btn.addEventListener("click", function (e) {
+
+                e.preventDefault();
+
+                let studentId = this.dataset.id;
+
+                fetch(`/api/student-attendance-summary/${studentId}/`)
+                    .then(res => res.json())
+                    .then(data => {
+
+                        document.getElementById("studentName").innerText =
+                            data.student_name;
+
+                        const photo = document.getElementById("studentPhoto");
+                        const avatar = document.getElementById("studentAvatar");
+
+                        if (data.photo_url) {
+
+                            photo.src = data.photo_url;
+                            photo.style.display = "block";
+
+                            avatar.style.display = "none";
+                        }
+                        else {
+
+                            photo.style.display = "none";
+                            avatar.style.display = "flex";
+
+                            const names = data.student_name.trim().split(" ");
+
+                            let initials = "";
+
+                            if (names.length >= 2) {
+                                initials = names[0][0] + names[names.length - 1][0];
+                            }
+                            else {
+                                initials = names[0][0];
+                            }
+
+                            avatar.innerText = initials.toUpperCase();
+                        }
+
+                        document.getElementById("studentInfo").innerText =
+                            data.course + " • " + data.batch + "(" + data.timing + ")";
+
+                        document.getElementById("presentCount").innerText =
+                            data.present;
+
+                        document.getElementById("absentCount").innerText =
+                            data.absent;
+
+                        document.getElementById("lateCount").innerText =
+                            data.late;
+
+                        document.getElementById("attendancePercent").innerText =
+                            data.percentage;
+
+                        let timeline = document.getElementById("timeline");
+                        timeline.innerHTML = "";
+
+                        data.timeline.forEach(item => {
+
+                            timeline.innerHTML += `
+                        <div class="timeline-item">
+                            <strong>${item.date}</strong> -
+                            ${item.status}
+                        </div>
+                    `;
+                        });
+
+                        modal.style.display = "flex";
+
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("Error loading attendance data");
+                    });
+
+            });
+
+        });
+
+    });
+
+</script>
+
+<script>
+function getAvatarColor(index) {
+
+    const colors = [
+        '#2563eb',
+        '#16a34a',
+        '#dc2626',
+        '#9333ea',
+        '#ea580c',
+        '#0891b2',
+        '#ca8a04',
+        '#be123c'
+    ];
+
+    return colors[index % colors.length];
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll('.student-avatar').forEach((el, index) => {
+        el.style.backgroundColor = getAvatarColor(index);
+    });
+
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll('input[type="date"], input[type="time"]')
+        .forEach(input => {
+
+            input.addEventListener("click", function () {
+
+                if (this.showPicker) {
+                    this.showPicker();
+                }
+
+            });
+
+        });
+});
+</script>
+
+{% endblock %}

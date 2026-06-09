@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+@page{
+    size:A4;
+    margin:10px;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#f4f6fb;
+    color:#333;
+    padding:10px;
+    font-size:11px;
+}
+
+/* ================= MAIN CONTAINER ================= */
+
+.receipt-container{
+    width:100%;
+    background:white;
+    border:1px solid #dbe2f0;
+    page-break-inside:avoid;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+    background:rgb(30, 42, 120);
+    color:white;
+    padding:16px;
+}
+
+.header-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+    color:rgb(255, 202, 43);
+    margin-bottom:4px;
+}
+
+.sub-text{
+    font-size:10px;
+    opacity:0.9;
+}
+
+.receipt-no{
+    text-align:right;
+}
+
+.receipt-no h2{
+    margin-top:5px;
+    font-size:18px;
+    color:rgb(255, 202, 43);
+}
+
+/* ================= TITLE ================= */
+
+.title{
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    color:rgb(30, 42, 120);
+    margin:14px 0;
+}
+
+/* ================= DETAILS TABLE ================= */
+
+.details-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:14px;
+    page-break-inside:avoid;
+}
+
+.details-table td{
+    border:1px solid #e5e7eb;
+    padding:7px;
+    font-size:10px;
+}
+
+.details-table .label{
+    width:35%;
+    background:#eef2ff;
+    color:rgb(30, 42, 120);
+    font-weight:bold;
+}
+
+/* ================= PAYMENT BOX ================= */
+
+.payment-box{
+    background:#f8faff;
+    border:1px solid #dbe2f0;
+    padding:14px;
+    margin-top:12px;
+    page-break-inside:avoid;
+}
+
+.payment-title{
+    font-size:15px;
+    font-weight:bold;
+    color:rgb(30, 42, 120);
+    margin-bottom:10px;
+}
+
+.amount{
+    font-size:24px;
+    font-weight:bold;
+    color:rgb(30, 42, 120);
+    margin-bottom:12px;
+}
+
+/* ================= SUMMARY TABLE ================= */
+
+.summary-table{
+    width:100%;
+    border-collapse:collapse;
+    page-break-inside:avoid;
+}
+
+.summary-table td{
+    padding:6px 0;
+    border-bottom:1px solid #e5e7eb;
+    font-size:10px;
+}
+
+.summary-table tr:last-child td{
+    border-bottom:none;
+}
+
+/* ================= STATUS ================= */
+
+.status{
+    background:rgb(255, 202, 43);
+    color:black;
+    padding:4px 10px;
+    font-size:9px;
+    font-weight:bold;
+}
+
+/* ================= FOOTER ================= */
+
+.footer{
+    margin-top:14px;
+    text-align:center;
+    font-size:9px;
+    color:#6b7280;
+}
+
+.footer strong{
+    color:rgb(30, 42, 120);
+}
+
+/* ================= PDF SAFE ================= */
+
+table{
+    page-break-inside:avoid;
+}
+
+tr{
+    page-break-inside:avoid;
+}
+
+td{
+    page-break-inside:avoid;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="receipt-container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <table class="header-table">
+
+            <tr>
+
+                <td>
+
+                    <div class="logo">
+                        CSC CRM
+                    </div>
+
+                    <div class="sub-text">
+                        Training & Admission Center
+                    </div>
+
+                </td>
+
+                <td class="receipt-no">
+
+                    <div>
+                        Receipt Number
+                    </div>
+
+                    <h2>
+                        RCPT-{{ payment.id }}
+                    </h2>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <!-- TITLE -->
+
+    <div class="title">
+        PAYMENT RECEIPT
+    </div>
+
+    <!-- DETAILS -->
+
+    <table class="details-table">
+
+        <tr>
+
+            <td class="label">
+                Student Name
+            </td>
+
+            <td>
+                {{ student_name }}
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td class="label">
+                Phone Number
+            </td>
+
+            <td>
+                {{ phone }}
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td class="label">
+                Email Address
+            </td>
+
+            <td>
+                {{ email }}
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td class="label">
+                Course
+            </td>
+
+            <td>
+                {{ course }}
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td class="label">
+                Batch
+            </td>
+
+            <td>
+                {{ batch }}
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td class="label">
+                Payment Date
+            </td>
+
+            <td>
+                {{ payment.date }}
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td class="label">
+                Payment Method
+            </td>
+
+            <td>
+                {{ payment.mode }}
+            </td>
+
+        </tr>
+
+    </table>
+
+    <!-- PAYMENT SUMMARY -->
+
+    <div class="payment-box">
+
+        <div class="payment-title">
+            Payment Summary
+        </div>
+
+        <div class="amount">
+            ₹{{ payment.amount }}
+        </div>
+
+        <table class="summary-table">
+
+            <tr>
+
+                <td>
+                    Transaction ID
+                </td>
+
+                <td align="right">
+                    {{ payment.reference_id }}
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+                    Total Course Fee
+                </td>
+
+                <td align="right">
+                    ₹{{ total_fee }}
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+                    Total Paid
+                </td>
+
+                <td align="right">
+                    ₹{{ total_paid }}
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+                    Pending Amount
+                </td>
+
+                <td align="right">
+                    ₹{{ pending }}
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+                    Payment Status
+                </td>
+
+                <td align="right">
+
+                    <span class="status">
+                        {% if pending <= 0 %}
+
+                            PAID
+
+                        {% elif total_paid > 0 %}
+
+                            PARTIAL
+
+                        {% else %}
+
+                            PENDING
+
+                         {% endif %}
+                    </span>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+
+        This is a computer generated receipt from
+        <strong>CSC CRM</strong>
+
+    </div>
+
+</div>
+
+</body>
+</html>

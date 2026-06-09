@@ -1,0 +1,383 @@
+{% extends 'admissions/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Receipt Preview</title>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'admissions/css/preview_receipt.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+<div class="receipt-container">
+
+    <div class="receipt-grid">
+
+        <!-- LEFT SECTION -->
+
+        <div>
+
+            <!-- HEADER -->
+
+            <div class="card">
+
+                <div class="header-flex">
+
+                    <div>
+
+                        <h1 class="main-title">
+                            Receipt Preview
+                        </h1>
+
+                        <p class="sub-title">
+                            Student Fee Payment Summary
+                        </p>
+
+                    </div>
+
+                    <div class="btn-group">
+
+                        <a href="{% url 'generate_receipt' payment.id %}" class="btn btn-light" download>
+                            Download PDF
+                        </a>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- STUDENT DETAILS -->
+
+            <div class="card mt-4">
+
+                <div class="header-flex mb-4">
+
+                    <h2 class="section-title">
+                        Student Details
+                    </h2>
+
+                    <span class="status-badge">
+                        Active Student
+                    </span>
+
+                </div>
+
+                <div class="student-grid">
+
+                    <div class="detail-card">
+                        <div class="detail-label">
+                            Student Name
+                        </div>
+
+                        <div class="detail-value">
+                            {{ payment.student.first_name }}
+                            {{ payment.student.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-label">
+                            Student ID
+                        </div>
+
+                        <div class="detail-value">
+                            STU{{ payment.student.id }}
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-label">
+                            Course
+                        </div>
+
+                        <div class="detail-value">
+                            {{ payment.student.admissions.first.course }}
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-label">
+                            Batch
+                        </div>
+
+                        <div class="detail-value">
+                            {{ payment.student.admissions.first.enrollment.batch }}
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-label">
+                            Phone Number
+                        </div>
+
+                        <div class="detail-value">
+                            {{ payment.student.phone_no }}
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-label">
+                            Email
+                        </div>
+
+                        <div class="detail-value">
+                            {{ payment.student.email }}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PAYMENT HISTORY -->
+
+            <div class="card mt-4">
+
+                <div class="header-flex mb-4">
+
+                    <div>
+
+                        <h2 class="section-title">
+                            Transaction History
+                        </h2>
+
+                        <p class="sub-title">
+                            Complete payment records
+                        </p>
+
+                    </div>
+
+                    <div class="transaction-count">
+                        Total Transactions :
+                        {{ payment.student.payments.count }}
+                    </div>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Transaction ID
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Payment Mode
+                                </th>
+
+                                <th>
+                                    Amount
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for pay in payment.student.payments.all %}
+
+                            <tr>
+
+                                <td>
+                                    {{ pay.reference_id }}
+                                </td>
+
+                                <td>
+                                    {{ pay.date }}
+                                </td>
+
+                                <td>
+                                    {{ pay.mode }}
+                                </td>
+
+                                <td>
+                                    ₹{{ pay.amount }}
+                                </td>
+
+                                <td>
+
+                                    <span class="status-paid">
+                                        Paid
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT SECTION -->
+
+        <div>
+
+            <!-- FEE SUMMARY -->
+
+            <div class="card">
+
+                <h2 class="section-title mb-4">
+                    Fee Management
+                </h2>
+
+                <div class="summary-card">
+
+                    <div class="summary-title">
+                        Total Course Fee
+                    </div>
+
+                    <div class="summary-value">
+                        ₹{{ payment.student.total_fee }}
+                    </div>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <div class="summary-title">
+                        Paid Amount
+                    </div>
+
+                    <div class="summary-value">
+                        ₹{{ payment.student.total_paid }}
+                    </div>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <div class="summary-title">
+                        Pending Amount
+                    </div>
+
+                    <div class="summary-value">
+                        ₹{{ payment.student.pending_amount }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RECEIPT CARD -->
+
+            <div class="receipt-black-card mt-4">
+
+                <div class="receipt-top">
+
+                    <div>
+
+                        <p style="color:rgb(255, 202, 43);font-size:14px;">
+                            Latest Receipt
+                        </p>
+
+                        <h2 style="font-size:32px;font-weight:700;margin-top:8px;">
+                            #REC{{ payment.id }}
+                        </h2>
+
+                    </div>
+
+                    <div class="receipt-icon">
+                        🧾
+                    </div>
+
+                </div>
+
+                <div class="receipt-row">
+
+                    <span style="color:rgb(255, 202, 43);">
+                        Payment Date
+                    </span>
+
+                    <span>
+                        {{ payment.date }}
+                    </span>
+
+                </div>
+
+                <div class="receipt-row">
+
+                    <span style="color:rgb(255, 202, 43);">
+                        Transaction ID
+                    </span>
+
+                    <span>
+                        {{ payment.reference_id }}
+                    </span>
+
+                </div>
+
+                <div class="receipt-row">
+
+                    <span style="color:rgb(255, 202, 43);">
+                        Payment Method
+                    </span>
+
+                    <span>
+                        {{ payment.mode }}
+                    </span>
+
+                </div>
+
+                <div class="receipt-row" style="border:none;font-size:22px;font-weight:700;">
+
+                    <span>
+                        Total Paid
+                    </span>
+
+                    <span>
+                        ₹{{ payment.amount }}
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- NOTES -->
+
+            <div class="notes-card mt-4">
+
+                <h3>
+                    Notes
+                </h3>
+
+                <p>
+                    This receipt is system generated.
+                    Keep this copy for future reference and verification.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
