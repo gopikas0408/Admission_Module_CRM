@@ -1,0 +1,1 @@
+web: gunicorn csc_crm.wsgi:application
