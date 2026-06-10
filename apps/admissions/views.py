@@ -121,7 +121,8 @@ CSC Academy
 
                             recipient_list=[student.email],
 
-                            fail_silently=False,
+                            #fail_silently=False,
+                            fail_silently=True,
                         )
 
                         # ADMIN EMAIL
@@ -150,7 +151,8 @@ Please verify the records from the admin panel.
 
                             recipient_list=['admin@gmail.com'],
 
-                            fail_silently=False,
+                            #fail_silently=False,
+                            fail_silently=True,
                         )
 
                         print("MAIL SENT SUCCESS")
