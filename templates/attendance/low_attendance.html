@@ -305,7 +305,7 @@
 
     </div>
 
-    
+
     <div class="bulk-buttons">
 
         <button class="btn bulk-sms-btn" onclick="sendSMSAll()">
@@ -345,16 +345,13 @@
 
     function sendEmailAll() {
 
-        let msg = document.getElementById(
-            "successMessage"
-        );
+        let msg = document.getElementById("successMessage");
 
-        msg.classList.remove(
-            "d-none"
-        );
+        msg.classList.remove("d-none");
+        msg.classList.remove("alert-danger");
+        msg.classList.add("alert-success");
 
-        msg.innerHTML =
-            "📧 Sending Emails... Please Wait";
+        msg.innerHTML = "📧 Sending Emails... Please Wait";
 
         fetch("/api/send-email-all/")
 
@@ -362,15 +359,29 @@
 
             .then(data => {
 
-                msg.innerHTML =
-                    data.message;
+                msg.classList.remove("d-none");
+                msg.classList.remove("alert-danger");
+                msg.classList.add("alert-success");
+
+                msg.innerHTML = data.message;
+
+                setTimeout(() => {
+                    msg.classList.add("d-none");
+                }, 3000);
 
             })
 
             .catch(error => {
 
-                msg.innerHTML =
-                    "❌ Email Sending Failed";
+                msg.classList.remove("d-none");
+                msg.classList.remove("alert-success");
+                msg.classList.add("alert-danger");
+
+                msg.innerHTML = "❌ Email Sending Failed";
+
+                setTimeout(() => {
+                    msg.classList.add("d-none");
+                }, 3000);
 
             });
 
@@ -378,16 +389,13 @@
 
     function sendSMSAll() {
 
-        let msg = document.getElementById(
-            "successMessage"
-        );
+        let msg = document.getElementById("successMessage");
 
-        msg.classList.remove(
-            "d-none"
-        );
+        msg.classList.remove("d-none");
+        msg.classList.remove("alert-danger");
+        msg.classList.add("alert-success");
 
-        msg.innerHTML =
-            "📱 Sending SMS... Please Wait";
+        msg.innerHTML = "📱 Sending SMS... Please Wait";
 
         fetch("/api/send-sms-all/")
 
@@ -395,15 +403,29 @@
 
             .then(data => {
 
-                msg.innerHTML =
-                    data.message;
+                msg.classList.remove("d-none");
+                msg.classList.remove("alert-danger");
+                msg.classList.add("alert-success");
+
+                msg.innerHTML = data.message;
+
+                setTimeout(() => {
+                    msg.classList.add("d-none");
+                }, 3000);
 
             })
 
             .catch(error => {
 
-                msg.innerHTML =
-                    "❌ SMS Sending Failed";
+                msg.classList.remove("d-none");
+                msg.classList.remove("alert-success");
+                msg.classList.add("alert-danger");
+
+                msg.innerHTML = "❌ SMS Sending Failed";
+
+                setTimeout(() => {
+                    msg.classList.add("d-none");
+                }, 3000);
 
             });
 
@@ -411,31 +433,43 @@
 
     function sendMonthlyReport() {
 
-        let msg = document.getElementById(
-            "successMessage"
-        );
+        let msg = document.getElementById("successMessage");
 
-        msg.classList.remove(
-            "d-none"
-        );
+        msg.classList.remove("d-none");
+        msg.classList.remove("alert-danger");
+        msg.classList.add("alert-success");
 
-        msg.innerHTML =
-            "📊 Generating Monthly Reports... Please Wait";
+        msg.innerHTML = "📊 Generating Monthly Reports... Please Wait";
 
-       fetch("/api/send-monthly-report/")
+        fetch("/api/send-monthly-report/")
+
             .then(response => response.json())
 
             .then(data => {
 
-                msg.innerHTML =
-                    data.message;
+                msg.classList.remove("d-none");
+                msg.classList.remove("alert-danger");
+                msg.classList.add("alert-success");
+
+                msg.innerHTML = data.message;
+
+                setTimeout(() => {
+                    msg.classList.add("d-none");
+                }, 3000);
 
             })
 
             .catch(error => {
 
-                msg.innerHTML =
-                    "❌ Monthly Report Sending Failed";
+                msg.classList.remove("d-none");
+                msg.classList.remove("alert-success");
+                msg.classList.add("alert-danger");
+
+                msg.innerHTML = "❌ Monthly Report Sending Failed";
+
+                setTimeout(() => {
+                    msg.classList.add("d-none");
+                }, 3000);
 
             });
 
@@ -447,23 +481,19 @@
 
             e.preventDefault();
 
-            let msg = document.getElementById(
-                "successMessage"
-            );
+            let msg = document.getElementById("successMessage");
 
-            msg.classList.remove(
-                "d-none"
-            );
+            msg.classList.remove("d-none");
+            msg.classList.remove("alert-danger");
+            msg.classList.add("alert-success");
 
             if (this.href.includes("send_sms")) {
 
-                msg.innerHTML =
-                    "📱 Sending SMS... Please Wait";
+                msg.innerHTML = "📱 Sending SMS... Please Wait";
 
             } else {
 
-                msg.innerHTML =
-                    "📧 Sending Email... Please Wait";
+                msg.innerHTML = "📧 Sending Email... Please Wait";
 
             }
 
@@ -473,15 +503,29 @@
 
                 .then(data => {
 
-                    msg.innerHTML =
-                        data.message;
+                    msg.classList.remove("d-none");
+                    msg.classList.remove("alert-danger");
+                    msg.classList.add("alert-success");
+
+                    msg.innerHTML = data.message;
+
+                    setTimeout(() => {
+                        msg.classList.add("d-none");
+                    }, 3000);
 
                 })
 
                 .catch(error => {
 
-                    msg.innerHTML =
-                        "❌ Notification Sending Failed";
+                    msg.classList.remove("d-none");
+                    msg.classList.remove("alert-success");
+                    msg.classList.add("alert-danger");
+
+                    msg.innerHTML = "❌ Notification Sending Failed";
+
+                    setTimeout(() => {
+                        msg.classList.add("d-none");
+                    }, 3000);
 
                 });
 

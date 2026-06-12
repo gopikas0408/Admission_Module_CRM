@@ -142,7 +142,10 @@ def get_low_attendance_data():
 
         attendance_records = Attendance.objects.filter(
             enrollment=enrollment
-        )
+        ).order_by('-attendance_date')
+        
+        if attendance_records.count() < 3:
+            continue
 
         present_count = attendance_records.filter(
             status='Present'
@@ -152,6 +155,17 @@ def get_low_attendance_data():
             status='Absent'
         ).count()
 
+        # Consecutive Absences
+        consecutive_absences = 0
+
+        for record in attendance_records:
+
+            if record.status == 'Absent':
+                consecutive_absences += 1
+            else:
+                break
+
+        # Attendance Percentage
         if total_working_days > 0:
 
             attendance_percentage = round(
@@ -162,19 +176,44 @@ def get_low_attendance_data():
         else:
             attendance_percentage = 100
 
-        if attendance_percentage < 75:
+        # Alert Logic
+        if (
+            attendance_percentage < 60
+            or consecutive_absences >= 3
+            or total_absences >= 8
+        ):
 
-            students_data.append({
-                
-                "id": enrollment.id,
-                "student": enrollment.student,
-                "course": enrollment.course,
-                "batch": enrollment.batch,
-                "attendance_percentage": attendance_percentage,
-                "total_absences": total_absences,
+            alert_level = "Critical"
 
-            })
+        elif (
+            attendance_percentage < 75
+            or consecutive_absences == 2
+            or total_absences >= 5
+        ):
+
+            alert_level = "Warning"
+
+        else:
+            continue
+
+        students_data.append({
+
+            "id": enrollment.id,
+
+            "student": enrollment.student,
+
+            "course": enrollment.course,
+
+            "batch": enrollment.batch,
+
+            "attendance_percentage": attendance_percentage,
+
+            "total_absences": total_absences,
+
+            "consecutive_absences": consecutive_absences,
+
+            "alert_level": alert_level,
+
+        })
 
     return students_data
-
- 
