@@ -278,7 +278,13 @@
     </div>
 
 </div>
-<div id="successMessage" class="alert alert-success d-none mb-3">
+<div id="successMessage" class="alert alert-success d-none" style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 320px;
+    ">
 </div>
 
 <!-- BULK NOTIFICATION -->
@@ -339,19 +345,44 @@
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 
+    function showPopup(message, isError = false) {
+
+        Swal.fire({
+
+            icon: isError ? "error" : "success",
+
+            title: isError ? "Failed" : "Success",
+
+            text: message,
+
+            timer: 2000,
+
+            showConfirmButton: false
+
+        });
+
+    }
 
 
     function sendEmailAll() {
 
-        let msg = document.getElementById("successMessage");
+       // let msg = document.getElementById("successMessage");
 
-        msg.classList.remove("d-none");
-        msg.classList.remove("alert-danger");
-        msg.classList.add("alert-success");
+        //msg.classList.remove("d-none");
+        //msg.classList.remove("alert-danger");
+        //msg.classList.add("alert-success");
 
-        msg.innerHTML = "📧 Sending Emails... Please Wait";
+       Swal.fire({
+           icon: "info",
+           title: "Sending Emails",
+           text: "Please wait...",
+           allowOutsideClick: false,
+           showConfirmButton: false
+        });
 
         fetch("/api/send-email-all/")
 
@@ -359,29 +390,34 @@
 
             .then(data => {
 
-                msg.classList.remove("d-none");
-                msg.classList.remove("alert-danger");
-                msg.classList.add("alert-success");
+                //msg.classList.remove("d-none");
+                //msg.classList.remove("alert-danger");
+                //msg.classList.add("alert-success");
 
-                msg.innerHTML = data.message;
+                Swal.close();
 
-                setTimeout(() => {
-                    msg.classList.add("d-none");
-                }, 3000);
+                showPopup(data.message);
+
+                //setTimeout(() => {
+                  //  msg.classList.add("d-none");
+               // }, 1000);
 
             })
 
             .catch(error => {
 
-                msg.classList.remove("d-none");
-                msg.classList.remove("alert-success");
-                msg.classList.add("alert-danger");
+               // msg.classList.remove("d-none");
+               // msg.classList.remove("alert-success");
+               // msg.classList.add("alert-danger");
 
-                msg.innerHTML = "❌ Email Sending Failed";
+                showPopup(
+                    "❌ Email Sending Failed",
+                    true
+                );
 
-                setTimeout(() => {
-                    msg.classList.add("d-none");
-                }, 3000);
+                //setTimeout(() => {
+                  //  msg.classList.add("d-none");
+                //}, 1000);
 
             });
 
@@ -389,13 +425,19 @@
 
     function sendSMSAll() {
 
-        let msg = document.getElementById("successMessage");
+       // let msg = document.getElementById("successMessage");
 
-        msg.classList.remove("d-none");
-        msg.classList.remove("alert-danger");
-        msg.classList.add("alert-success");
+        //msg.classList.remove("d-none");
+        //msg.classList.remove("alert-danger");
+        //msg.classList.add("alert-success");
 
-        msg.innerHTML = "📱 Sending SMS... Please Wait";
+        Swal.fire({
+            icon: "info",
+            title: "Sending SMS",
+            text: "Please wait...",
+            allowOutsideClick: false,
+            showConfirmButton: false
+        });
 
         fetch("/api/send-sms-all/")
 
@@ -403,29 +445,33 @@
 
             .then(data => {
 
-                msg.classList.remove("d-none");
-                msg.classList.remove("alert-danger");
-                msg.classList.add("alert-success");
+                //msg.classList.remove("d-none");
+                //msg.classList.remove("alert-danger");
+                //msg.classList.add("alert-success");
 
-                msg.innerHTML = data.message;
+                Swal.close();
 
-                setTimeout(() => {
-                    msg.classList.add("d-none");
-                }, 3000);
+                showPopup(data.message);
+
+                //setTimeout(() => {
+                //    msg.classList.add("d-none");
+               // }, 1000);
 
             })
 
             .catch(error => {
 
-                msg.classList.remove("d-none");
-                msg.classList.remove("alert-success");
-                msg.classList.add("alert-danger");
+                //msg.classList.remove("d-none");
+                //msg.classList.remove("alert-success");
+                //msg.classList.add("alert-danger");
 
-                msg.innerHTML = "❌ SMS Sending Failed";
-
-                setTimeout(() => {
-                    msg.classList.add("d-none");
-                }, 3000);
+                showPopup(
+                    "❌ SMS Sending Failed",
+                    true
+                );
+               // setTimeout(() => {
+                 //   msg.classList.add("d-none");
+                //}, 1000);
 
             });
 
@@ -433,13 +479,19 @@
 
     function sendMonthlyReport() {
 
-        let msg = document.getElementById("successMessage");
+        //let msg = document.getElementById("successMessage");
 
-        msg.classList.remove("d-none");
-        msg.classList.remove("alert-danger");
-        msg.classList.add("alert-success");
+       // msg.classList.remove("d-none");
+        //msg.classList.remove("alert-danger");
+        //msg.classList.add("alert-success");
 
-        msg.innerHTML = "📊 Generating Monthly Reports... Please Wait";
+        Swal.fire({
+            icon: "info",
+            title: "Generating Monthly Report",
+            text: "Please wait...",
+            allowOutsideClick: false,
+            showConfirmButton: false
+        });
 
         fetch("/api/send-monthly-report/")
 
@@ -447,29 +499,33 @@
 
             .then(data => {
 
-                msg.classList.remove("d-none");
-                msg.classList.remove("alert-danger");
-                msg.classList.add("alert-success");
+               // msg.classList.remove("d-none");
+               // msg.classList.remove("alert-danger");
+               // msg.classList.add("alert-success");
 
-                msg.innerHTML = data.message;
+                Swal.close();
 
-                setTimeout(() => {
-                    msg.classList.add("d-none");
-                }, 3000);
+                showPopup(data.message);
+               // setTimeout(() => {
+                 //   msg.classList.add("d-none");
+               // }, 1000);
 
             })
 
             .catch(error => {
 
-                msg.classList.remove("d-none");
-                msg.classList.remove("alert-success");
-                msg.classList.add("alert-danger");
+                //msg.classList.remove("d-none");
+                //msg.classList.remove("alert-success");
+                //msg.classList.add("alert-danger");
 
-                msg.innerHTML = "❌ Monthly Report Sending Failed";
+                showPopup(
+                    "❌ Monthly Report Sending Failed",
+                    true
+                );
 
-                setTimeout(() => {
-                    msg.classList.add("d-none");
-                }, 3000);
+               // setTimeout(() => {
+                 //   msg.classList.add("d-none");
+                //}, 1000);
 
             });
 
@@ -481,20 +537,31 @@
 
             e.preventDefault();
 
-            let msg = document.getElementById("successMessage");
+            //let msg = document.getElementById("successMessage");
 
-            msg.classList.remove("d-none");
-            msg.classList.remove("alert-danger");
-            msg.classList.add("alert-success");
+           // msg.classList.remove("d-none");
+           // msg.classList.remove("alert-danger");
+           // msg.classList.add("alert-success");
 
             if (this.href.includes("send_sms")) {
 
-                msg.innerHTML = "📱 Sending SMS... Please Wait";
+                Swal.fire({
+                    icon: "info",
+                    title: "Sending SMS",
+                    text: "Please wait...",
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                });
 
             } else {
 
-                msg.innerHTML = "📧 Sending Email... Please Wait";
-
+                Swal.fire({
+                    icon: "info",
+                    title: "Sending Email",
+                    text: "Please wait...",
+                    allowOutsideClick: false,
+                    showConfirmButton: false
+                });
             }
 
             fetch(this.href)
@@ -503,29 +570,33 @@
 
                 .then(data => {
 
-                    msg.classList.remove("d-none");
-                    msg.classList.remove("alert-danger");
-                    msg.classList.add("alert-success");
+                   // msg.classList.remove("d-none");
+                   // msg.classList.remove("alert-danger");
+                    //msg.classList.add("alert-success");
+                    Swal.close();
 
-                    msg.innerHTML = data.message;
+                    showPopup(data.message);
 
-                    setTimeout(() => {
-                        msg.classList.add("d-none");
-                    }, 3000);
+                    //setTimeout(() => {
+                    //    msg.classList.add("d-none");
+                    //}, 1000);
 
                 })
 
                 .catch(error => {
 
-                    msg.classList.remove("d-none");
-                    msg.classList.remove("alert-success");
-                    msg.classList.add("alert-danger");
+                   // msg.classList.remove("d-none");
+                   // msg.classList.remove("alert-success");
+                   // msg.classList.add("alert-danger");
 
-                    msg.innerHTML = "❌ Notification Sending Failed";
+                    showPopup(
+                        "❌ Notification Sending Failed",
+                        true
+                    );
 
                     setTimeout(() => {
                         msg.classList.add("d-none");
-                    }, 3000);
+                    }, 1000);
 
                 });
 

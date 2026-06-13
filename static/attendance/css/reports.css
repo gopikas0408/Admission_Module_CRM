@@ -424,11 +424,15 @@ canvas{
     min-width:78px;
 
 }
+.excellent-badge{
+    background:var(--light);
+    color:var(--success);
+}
 
 .good-badge{
 
     background:var(--light);
-    color:var(--success);
+    color:var(--primary);
 
 }
 

@@ -1,4 +1,4 @@
-from .models import Attendance
+from .models import Attendance, AbsentTracker
 from apps.admissions.models import Enrollment
 
 
@@ -25,6 +25,10 @@ def get_absent_tracker_data():
             .filter(enrollment=enrollment)
             .order_by('-attendance_date')
         )
+        
+        tracker = AbsentTracker.objects.filter(
+            enrollment=enrollment
+        ).first()
 
         total_absences = attendance_records.filter(
             status='Absent'
@@ -115,8 +119,10 @@ def get_absent_tracker_data():
             "attendance_status":
             attendance_status,
             
-            "admin_notes":
-            "",
+           "admin_notes":
+            tracker.admin_notes if tracker else "",
+            
+            "tracker_id": tracker.id if tracker else None,
 
         })
 

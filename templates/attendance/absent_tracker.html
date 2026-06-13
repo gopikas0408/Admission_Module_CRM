@@ -11,540 +11,548 @@
 
 
 <!-- TOP HEADER -->
- <div class="main-content">
+<div class="main-content">
 
-<div class="top-header">
+    <div class="top-header">
 
-    <div>
+        <div>
 
-        <h1>
+            <h1>
 
-            Absence Management & Safety Tracking
+                Absence Management & Safety Tracking
 
-        </h1>
+            </h1>
 
-        <p>
+            <p>
 
-            Monitor patterns of consecutive absences and coordinate notifications to parents or coordinators.
+                Monitor patterns of consecutive absences and coordinate notifications to parents or coordinators.
 
-        </p>
-
-    </div>
-
-    <div class="top-right">
-
-        <span class="live-sync">
-
-            <span class="dot"></span>
-
-            Live Sync Active
-
-        </span>
-
-        <div class="notification-icon">
-
-            <i class="bi bi-bell"></i>
+            </p>
 
         </div>
 
-    </div>
+        <div class="top-right">
 
-</div>
+            <span class="live-sync">
 
+                <span class="dot"></span>
 
+                Live Sync Active
 
-<!-- TRACKER CARD -->
+            </span>
 
-<div class="tracker-container">
+            <div class="notification-icon">
 
-
-    <!-- CARD HEADER -->
-
-    <div class="tracker-header">
-
-        <div class="critical-title">
-
-            <i class="bi bi-exclamation-octagon-fill"></i>
-
-            <h3>
-
-                Critical Attendance Cases (>3 Consecutive Absences)
-
-            </h3>
-
-        </div>
-
-        <span class="alert-badge">
-
-            {{ absent_students|length }} Active Alerts
-
-        </span>
-
-    </div>
-    <div class="filter-container">
-
-        <input type="text" id="studentNameFilter" placeholder="Student Name" class="filter-input">
-
-
-
-        <select id="courseFilter" class="filter-select">
-            <option value="">Course</option>
-
-            {% for course in courses %}
-            <option value="{{ course.course_name }}">
-                {{ course.course_name }}
-            </option>
-            {% endfor %}
-
-        </select>
-
-        <select id="batchFilter" class="filter-select">
-            <option value="">Batch</option>
-
-            {% for batch in batches %}
-            <option value="{{ batch.batch_name }}">
-                {{ batch.batch_name }}
-            </option>
-            {% endfor %}
-
-        </select>
-
-        <input type="text" id="phoneFilter" placeholder="Phone Number" class="filter-input">
-
-        <input type="text" id="emailFilter" placeholder="Email ID" class="filter-input">
-
-        <select id="statusFilter" class="filter-select">
-
-            <option value="">
-                Alert Status
-            </option>
-
-            <option value="critical">
-                Critical
-            </option>
-
-            <option value="medium">
-                Medium
-            </option>
-
-            <option value="low">
-                Low
-            </option>
-
-        </select>
-        <button id="clearFilters" class="clear-btn">
-
-            <i class="bi bi-x-circle"></i>
-            Clear
-
-        </button>
-
-        <button id="showAllBtn" class="clear-btn">
-
-
-            Search All
-
-        </button>
-
-    </div>
-
-    <div id="resultsCount" class="results-count">
-
-        Showing {{ absent_students|length }} of {{ absent_students|length }} Students
-
-    </div>
-
-
-
-    <!-- TABLE -->
-
-    <div class="table-responsive">
-
-        <table class="attendance-table">
-
-            <thead>
-
-                <tr>
-
-                    <th>
-
-                        Student Details
-
-                    </th>
-                    <th>Course</th>
-
-
-                    <th>
-
-                        Batch
-
-                    </th>
-                    <th>
-                        Attendance Status
-                    </th>
-
-                    <th>
-
-                        Consecutive Absences
-
-                    </th>
-                    <th>Absent Days</th>
-
-                    <th>
-
-                        Observation Notes
-
-                    </th>
-
-                    <th>
-
-                        Notification Status
-
-                    </th>
-
-                    <th>
-
-                        Action Panel
-
-                    </th>
-                    <th>Admin Notes</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for student in absent_students %}
-
-                <tr class="student-row"
-                    data-name="{{ student.student.first_name|lower }} {{ student.student.last_name|lower }}"
-                    data-course="{{ student.course.course_name|lower }}"
-                    data-batch="{{ student.batch.batch_name|lower }}" data-phone="{{ student.student.phone_no|lower }}"
-                    data-email="{{ student.student.email|lower }}" data-status="{{ student.alert_level|lower }}">
-
-                    <!-- STUDENT -->
-
-                    <td>
-
-                        <div class="student-info">
-
-                            <div class="student-avatar">
-
-                                <i class="bi bi-person"></i>
-
-                            </div>
-
-                            <div>
-
-                                <h6>
-
-                                    {{ student.student.first_name }} {{ student.student.last_name }}
-
-                                </h6>
-
-                                <small>
-
-                                    Ph:
-                                    {{ student.student.phone_no }}
-
-                                </small>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-
-
-                    <!-- BATCH -->
-
-                    <td>
-
-                        <span class="batch-pill">
-
-                            {{ student.course.course_name }}
-
-                        </span>
-
-                    </td>
-                    <td>
-
-                        <span class="batch-pill">
-
-                            {{ student.batch.batch_name }}
-
-                        </span>
-
-                    </td>
-                    <!-- ATTENDANCE STATUS -->
-                    <td>
-
-                        {% if student.attendance_status == "Complete" %}
-
-                        <span class="status-badge dispatched">
-
-                            Complete
-
-                        </span>
-
-                        {% else %}
-
-                        <span class="status-badge pending">
-
-                            Incomplete
-
-                        </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-
-
-
-
-                    <!-- ABSENCE -->
-
-                    <td>
-
-                        <span class="absence-pill">
-
-                            {{ student.consecutive_absences }} Days
-
-                        </span>
-
-                    </td>
-                    <td>
-                        <span class="days-badge total-days">
-                            {{ student.total_absences }} Days
-                        </span>
-                    </td>
-
-
-
-                    <!-- OBSERVATION -->
-
-                    <td>
-
-                        {% if student.total_absences == 1 %}
-
-                        <span class="obs-badge stable"
-                            title="Student attendance remains consistent and within acceptable limits.">
-                            🟢 Stable
-                        </span>
-
-                        {% elif student.total_absences == 2 %}
-
-                        <span class="obs-badge followup"
-                            title="Attendance has shown a slight decline. Follow-up with the student is recommended.">
-                            🟡 Follow-up
-                        </span>
-
-                        {% elif student.total_absences <= 5 %} <span class="obs-badge parent-pending"
-                            title="Parent/Guardian communication is recommended due to increasing absences.">
-                            🟠 Warning
-                            </span>
-
-                            {% else %}
-
-                            <span class="obs-badge critical-risk"
-                                title="Attendance level is critically low and requires immediate intervention.">
-                                🔴 Critical Risk
-                            </span>
-
-                            {% endif %}
-
-                    </td>
-
-
-
-
-                    <!-- STATUS -->
-
-                    <td class="notification-cell">
-
-                        {% if student.notification_sent %}
-
-                        <span class="status-badge dispatched">
-
-                            <i class="bi bi-check-circle-fill"></i>
-
-                            Dispatched
-
-                        </span>
-
-                        {% else %}
-
-                        <span class="status-badge pending">
-
-                            <i class="bi bi-hourglass-split"></i>
-
-                            SMS Pending
-
-                        </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-
-                    <!-- ACTION -->
-
-
-                    <td>
-
-                        {% if student.notification_sent %}
-
-                        <button class="renotify-btn notify-action-btn" data-id="{{ student.id }}">
-
-                            <i class="bi bi-arrow-repeat"></i>
-
-                            Re-notify
-
-                        </button>
-
-                        {% else %}
-
-                        <button class="notify-btn notify-action-btn" data-id="{{ student.id }}">
-
-                            <i class="bi bi-chat-left-text"></i>
-
-                            Notify Student
-
-                        </button>
-
-                        {% endif %}
-
-                    </td>
-                    <!-- ADMIN NOTES -->
-
-                    <td>
-
-                        <div class="admin-notes-actions">
-
-                            <button class="admin-btn edit-btn"
-                                onclick="openEditModal('{{ student.id }}', '{{ student.admin_notes|default_if_none:""|escapejs }}')">
-
-                                <i class="bi bi-pencil-square"></i>
-
-                            </button>
-
-                            <button type="button" class="admin-btn view-btn"
-                                onclick="openViewModal('No notes available')">
-
-                                <i class="bi bi-eye"></i>
-
-                            </button>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                {% empty %}
-
-                <tr>
-
-                    <td colspan="10">
-
-                        <div class="empty-state">
-
-                            <i class="bi bi-check-circle-fill"></i>
-
-                            <h5>
-
-                                No Critical Alerts Found
-
-                            </h5>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-
-
-    <div id="smsToast" class="sms-toast"></div>
-
-    <!-- ADMIN NOTES MODAL -->
-
-
-    <div id="adminNoteModal" class="custom-modal">
-
-        <div class="custom-modal-content">
-
-            <div class="modal-header">
-
-                <h5>Admin Notes</h5>
-
-                <span onclick="closeAdminModal()">
-                    &times;
-                </span>
+                <i class="bi bi-bell"></i>
 
             </div>
 
-            <input type="hidden" id="trackerId">
+        </div>
 
-            <textarea id="adminNoteText" class="form-control" rows="6">
-        </textarea>
+    </div>
 
-            <button class="notify-btn mt-3" onclick="saveAdminNotes()">
 
-                Save Notes
+
+    <!-- TRACKER CARD -->
+
+    <div class="tracker-container">
+
+
+        <!-- CARD HEADER -->
+
+        <div class="tracker-header">
+
+            <div class="critical-title">
+
+                <i class="bi bi-exclamation-octagon-fill"></i>
+
+                <h3>
+
+                    Critical Attendance Cases (>3 Consecutive Absences)
+
+                </h3>
+
+            </div>
+
+            <span class="alert-badge">
+
+                {{ absent_students|length }} Active Alerts
+
+            </span>
+
+        </div>
+        <div class="filter-container">
+
+            <input type="text" id="studentNameFilter" placeholder="Student Name" class="filter-input">
+
+
+
+            <select id="courseFilter" class="filter-select">
+                <option value="">Course</option>
+
+                {% for course in courses %}
+                <option value="{{ course.course_name }}">
+                    {{ course.course_name }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+            <select id="batchFilter" class="filter-select">
+                <option value="">Batch</option>
+
+                {% for batch in batches %}
+                <option value="{{ batch.batch_name }}">
+                    {{ batch.batch_name }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+            <input type="text" id="phoneFilter" placeholder="Phone Number" class="filter-input">
+
+            <input type="text" id="emailFilter" placeholder="Email ID" class="filter-input">
+
+            <select id="statusFilter" class="filter-select">
+
+                <option value="">
+                    Alert Status
+                </option>
+
+                <option value="critical">
+                    Critical
+                </option>
+
+                <option value="medium">
+                    Medium
+                </option>
+
+                <option value="low">
+                    Low
+                </option>
+
+            </select>
+            <button id="clearFilters" class="clear-btn">
+
+                <i class="bi bi-x-circle"></i>
+                Clear
+
+            </button>
+
+            <button id="showAllBtn" class="clear-btn">
+
+
+                Search All
 
             </button>
 
         </div>
 
-    </div>
-    <!-- JS -->
+        <div id="resultsCount" class="results-count">
+
+            Showing {{ absent_students|length }} of {{ absent_students|length }} Students
+
+        </div>
 
 
-    <script>
 
-        document.addEventListener(
+        <!-- TABLE -->
 
-            "DOMContentLoaded",
+        <div class="table-responsive">
 
-            function () {
+            <table class="attendance-table">
 
-                const notifyButtons = document.querySelectorAll(
+                <thead>
 
-                    ".notify-action-btn"
+                    <tr>
 
-                );
+                        <th>
 
-                notifyButtons.forEach(
+                            Student Details
 
-                    function (button) {
+                        </th>
+                        <th>Course</th>
 
-                        button.addEventListener(
 
-                            "click",
+                        <th>
 
-                            function () {
+                            Batch
 
-                                // PREVENT MULTIPLE CLICKS
+                        </th>
+                        <th>
+                            Attendance Status
+                        </th>
 
-                                button.disabled = true;
+                        <th>
 
-                                // LOADING STATE
+                            Consecutive Absences
 
-                                button.innerHTML = `
+                        </th>
+                        <th>Absent Days</th>
+
+                        <th>
+
+                            Observation Notes
+
+                        </th>
+
+                        <th>
+
+                            Notification Status
+
+                        </th>
+
+                        <th>
+
+                            Action Panel
+
+                        </th>
+                        <th>Admin Notes</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for student in absent_students %}
+
+                    <tr class="student-row"
+                        data-name="{{ student.student.first_name|lower }} {{ student.student.last_name|lower }}"
+                        data-course="{{ student.course.course_name|lower }}"
+                        data-batch="{{ student.batch.batch_name|lower }}"
+                        data-phone="{{ student.student.phone_no|lower }}" data-email="{{ student.student.email|lower }}"
+                        data-status="{{ student.alert_level|lower }}">
+
+                        <!-- STUDENT -->
+
+                        <td>
+
+                            <div class="student-info">
+
+                                <div class="student-avatar">
+
+                                    <i class="bi bi-person"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <h6>
+
+                                        {{ student.student.first_name }} {{ student.student.last_name }}
+
+                                    </h6>
+
+                                    <small>
+
+                                        Ph:
+                                        {{ student.student.phone_no }}
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+
+                        <!-- BATCH -->
+
+                        <td>
+
+                            <span class="batch-pill">
+
+                                {{ student.course.course_name }}
+
+                            </span>
+
+                        </td>
+                        <td>
+
+                            <span class="batch-pill">
+
+                                {{ student.batch.batch_name }}
+
+                            </span>
+
+                        </td>
+                        <!-- ATTENDANCE STATUS -->
+                        <td>
+
+                            {% if student.attendance_status == "Complete" %}
+
+                            <span class="status-badge dispatched">
+
+                                Complete
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="status-badge pending">
+
+                                Incomplete
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+
+
+
+
+                        <!-- ABSENCE -->
+
+                        <td>
+
+                            <span class="absence-pill">
+
+                                {{ student.consecutive_absences }} Days
+
+                            </span>
+
+                        </td>
+                        <td>
+                            <span class="days-badge total-days">
+                                {{ student.total_absences }} Days
+                            </span>
+                        </td>
+
+
+
+                        <!-- OBSERVATION -->
+
+                        <td>
+
+                            {% if student.total_absences == 1 %}
+
+                            <span class="obs-badge stable"
+                                title="Student attendance remains consistent and within acceptable limits.">
+                                🟢 Stable
+                            </span>
+
+                            {% elif student.total_absences == 2 %}
+
+                            <span class="obs-badge followup"
+                                title="Attendance has shown a slight decline. Follow-up with the student is recommended.">
+                                🟡 Follow-up
+                            </span>
+
+                            {% elif student.total_absences <= 5 %} <span class="obs-badge parent-pending"
+                                title="Parent/Guardian communication is recommended due to increasing absences.">
+                                🟠 Warning
+                                </span>
+
+                                {% else %}
+
+                                <span class="obs-badge critical-risk"
+                                    title="Attendance level is critically low and requires immediate intervention.">
+                                    🔴 Critical Risk
+                                </span>
+
+                                {% endif %}
+
+                        </td>
+
+
+
+
+                        <!-- STATUS -->
+
+                        <td class="notification-cell">
+
+                            {% if student.notification_sent %}
+
+                            <span class="status-badge dispatched">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Dispatched
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="status-badge pending">
+
+                                <i class="bi bi-hourglass-split"></i>
+
+                                SMS Pending
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+
+                        <!-- ACTION -->
+
+
+                        <td>
+
+                            {% if student.notification_sent %}
+
+                            <button class="renotify-btn notify-action-btn" data-id="{{ student.id }}">
+
+                                <i class="bi bi-arrow-repeat"></i>
+
+                                Re-notify
+
+                            </button>
+
+                            {% else %}
+
+                            <button class="notify-btn notify-action-btn" data-id="{{ student.id }}">
+
+                                <i class="bi bi-chat-left-text"></i>
+
+                                Notify Student
+
+                            </button>
+
+                            {% endif %}
+
+                        </td>
+                        <!-- ADMIN NOTES -->
+
+                        <td>
+
+                            <div class="admin-notes-actions">
+
+                                <button type="button" class="admin-btn edit-btn"
+                                    onclick="openEditModal('{{ student.tracker_id }}', '{{ student.admin_notes|default_if_none:""|escapejs }}')">
+
+                                    <i class="bi bi-pencil-square"></i>
+
+                                </button>
+
+
+                                <button type="button" class="admin-btn view-btn" onclick="openViewModal(
+                                      '{{ student.tracker_id }}',
+                                      `{{ student.admin_notes|default_if_none:" No notes available"|escapejs }}` )">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </button>
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="10">
+
+                            <div class="empty-state">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                <h5>
+
+                                    No Critical Alerts Found
+
+                                </h5>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+
+        <div id="smsToast" class="sms-toast"></div>
+
+        <!-- ADMIN NOTES MODAL -->
+
+
+        <div id="adminNoteModal" class="custom-modal">
+
+            <div class="custom-modal-content">
+
+                <div class="modal-header">
+
+                    <h5>Admin Notes</h5>
+
+                    <span onclick="closeAdminModal()">
+                        &times;
+                    </span>
+
+                </div>
+
+                <input type="hidden" id="trackerId">
+
+                <textarea id="adminNoteText" class="form-control" rows="6">
+        </textarea>
+
+                <button id="saveNoteBtn" class="notify-btn mt-3" onclick="saveAdminNotes()">
+
+                    Save Notes
+
+                </button>
+
+                <button type="button" id="editNoteBtn" class="notify-btn" onclick="enableEditMode()">
+
+                    Edit Notes
+
+                </button>
+
+            </div>
+
+        </div>
+        <!-- JS -->
+
+
+        <script>
+
+            document.addEventListener(
+
+                "DOMContentLoaded",
+
+                function () {
+
+                    const notifyButtons = document.querySelectorAll(
+
+                        ".notify-action-btn"
+
+                    );
+
+                    notifyButtons.forEach(
+
+                        function (button) {
+
+                            button.addEventListener(
+
+                                "click",
+
+                                function () {
+
+                                    // PREVENT MULTIPLE CLICKS
+
+                                    button.disabled = true;
+
+                                    // LOADING STATE
+
+                                    button.innerHTML = `
 
                             <span class="spinner-border spinner-border-sm"></span>
 
@@ -552,61 +560,61 @@
 
                         `;
 
-                                // SIMULATE REAL-TIME API
+                                    // SIMULATE REAL-TIME API
 
-                                setTimeout(function () {
+                                    setTimeout(function () {
 
-                                    // BUTTON STYLE CHANGE
+                                        // BUTTON STYLE CHANGE
 
-                                    button.classList.remove(
+                                        button.classList.remove(
 
-                                        "notify-btn"
+                                            "notify-btn"
 
-                                    );
+                                        );
 
-                                    button.classList.add(
+                                        button.classList.add(
 
-                                        "renotify-btn"
+                                            "renotify-btn"
 
-                                    );
+                                        );
 
-                                    // BUTTON TEXT CHANGE
+                                        // BUTTON TEXT CHANGE
 
-                                    button.innerHTML = `
+                                        button.innerHTML = `
 
                                 <i class="bi bi-arrow-repeat"></i>
 
                                 Re-notify
 
                             `;
-                                    showToast(
-                                        " Student Re-notification Sent Successfully"
-                                    );
+                                        showToast(
+                                            " Student Re-notification Sent Successfully"
+                                        );
 
-                                    // ENABLE AGAIN
+                                        // ENABLE AGAIN
 
-                                    button.disabled = false;
+                                        button.disabled = false;
 
-                                    // STATUS BADGE UPDATE
+                                        // STATUS BADGE UPDATE
 
-                                    const row = button.closest("tr");
+                                        const row = button.closest("tr");
 
-                                    const statusBadge = row.querySelector(
+                                        const statusBadge = row.querySelector(
 
-                                        ".notification-cell .status-badge"
-                                    );
+                                            ".notification-cell .status-badge"
+                                        );
 
-                                    statusBadge.classList.remove(
+                                        statusBadge.classList.remove(
 
-                                        "pending"
-                                    );
+                                            "pending"
+                                        );
 
-                                    statusBadge.classList.add(
+                                        statusBadge.classList.add(
 
-                                        "dispatched"
-                                    );
+                                            "dispatched"
+                                        );
 
-                                    statusBadge.innerHTML = `
+                                        statusBadge.innerHTML = `
 
                                 <i class="bi bi-check-circle-fill"></i>
 
@@ -614,304 +622,391 @@
 
                             `;
 
-                                    // SUCCESS MESSAGE
+                                        // SUCCESS MESSAGE
 
-                                    showToast(
-                                        " Student SMS Alert Queued Successfully"
-                                    );
+                                        showToast(
+                                            " Student SMS Alert Queued Successfully"
+                                        );
 
-                                }, 1500);
+                                    }, 1500);
 
-                            }
+                                }
 
-                        );
+                            );
 
-                    }
+                        }
 
-                );
-
-            }
-
-        );
-        //filter
-
-        function applyFilters() {
-
-            const name =
-                document.getElementById(
-                    "studentNameFilter"
-                ).value.toLowerCase();
-
-
-
-            const batch =
-                document.getElementById(
-                    "batchFilter"
-                ).value.toLowerCase();
-
-            const course =
-                document.getElementById(
-                    "courseFilter"
-                ).value.toLowerCase();
-
-            const phone =
-                document.getElementById(
-                    "phoneFilter"
-                ).value.toLowerCase();
-
-            const email =
-                document.getElementById(
-                    "emailFilter"
-                ).value.toLowerCase();
-
-            const status =
-                document.getElementById(
-                    "statusFilter"
-                ).value.toLowerCase();
-
-            let visibleCount = 0;
-
-            const totalCount =
-                document.querySelectorAll(
-                    ".student-row"
-                ).length;
-
-            document.querySelectorAll(
-                ".student-row"
-            ).forEach(row => {
-
-                const show =
-
-                    (name === "" ||
-                        row.dataset.name
-                            .toLowerCase()
-                            .startsWith(name)) &&
-
-
-                    (course === "" ||
-                        row.dataset.course
-                            .toLowerCase()
-                            .includes(course)) &&
-
-                    (batch === "" ||
-                        row.dataset.batch
-                            .toLowerCase()
-                            .includes(batch)) &&
-
-                    (phone === "" ||
-                        row.dataset.phone
-                            .toLowerCase()
-                            .startsWith(phone)) &&
-
-                    (email === "" ||
-                        row.dataset.email
-                            .toLowerCase()
-                            .includes(email)) &&
-
-                    (status === "" ||
-                        row.dataset.status
-                            .toLowerCase() === status);
-
-                row.style.display =
-                    show ? "" : "none";
-
-                if (show) {
-
-                    visibleCount++;
+                    );
 
                 }
 
-            });
-            document.getElementById(
-                "resultsCount"
-            ).innerHTML =
-
-                `Showing ${visibleCount} of ${totalCount} Students`;
-
-
-        }
-
-        document.querySelectorAll(
-            ".filter-input, .filter-select"
-        ).forEach(input => {
-
-            input.addEventListener(
-                "keyup",
-                applyFilters
             );
+            //filter
 
-            input.addEventListener(
-                "change",
-                applyFilters
-            );
+            function applyFilters() {
 
-        });
-        document.getElementById(
-            "clearFilters"
-        ).addEventListener(
-            "click",
-            function () {
+                const name =
+                    document.getElementById(
+                        "studentNameFilter"
+                    ).value.toLowerCase();
+
+
+
+                const batch =
+                    document.getElementById(
+                        "batchFilter"
+                    ).value.toLowerCase();
+
+                const course =
+                    document.getElementById(
+                        "courseFilter"
+                    ).value.toLowerCase();
+
+                const phone =
+                    document.getElementById(
+                        "phoneFilter"
+                    ).value.toLowerCase();
+
+                const email =
+                    document.getElementById(
+                        "emailFilter"
+                    ).value.toLowerCase();
+
+                const status =
+                    document.getElementById(
+                        "statusFilter"
+                    ).value.toLowerCase();
+
+                let visibleCount = 0;
+
+                const totalCount =
+                    document.querySelectorAll(
+                        ".student-row"
+                    ).length;
 
                 document.querySelectorAll(
-                    ".filter-input"
-                ).forEach(input => {
+                    ".student-row"
+                ).forEach(row => {
 
-                    input.value = "";
+                    const show =
 
-                });
-
-                document.getElementById(
-                    "statusFilter"
-                ).value = "";
-
-                document.getElementById(
-                    "courseFilter"
-                ).value = "";
-                document.getElementById(
-                    "batchFilter"
-                ).value = "";
-
-                applyFilters();
+                        (name === "" ||
+                            row.dataset.name
+                                .toLowerCase()
+                                .startsWith(name)) &&
 
 
+                        (course === "" ||
+                            row.dataset.course
+                                .toLowerCase()
+                                .includes(course)) &&
 
-            }
-        );
+                        (batch === "" ||
+                            row.dataset.batch
+                                .toLowerCase()
+                                .includes(batch)) &&
 
-        document.getElementById(
-            "showAllBtn"
-        ).addEventListener(
-            "click",
-            function () {
+                        (phone === "" ||
+                            row.dataset.phone
+                                .toLowerCase()
+                                .startsWith(phone)) &&
 
-                document.querySelectorAll(
-                    ".filter-input"
-                ).forEach(input => {
+                        (email === "" ||
+                            row.dataset.email
+                                .toLowerCase()
+                                .includes(email)) &&
 
-                    input.value = "";
+                        (status === "" ||
+                            row.dataset.status
+                                .toLowerCase() === status);
 
-                });
+                    row.style.display =
+                        show ? "" : "none";
 
-                document.getElementById(
-                    "statusFilter"
-                ).value = "";
+                    if (show) {
 
-                document.getElementById(
-                    "courseFilter"
-                ).value = "";
-
-                document.getElementById(
-                    "batchFilter"
-                ).value = "";
-
-                applyFilters();
-
-            }
-        );
-
-        function showToast(message) {
-
-            const toast =
-                document.getElementById(
-                    "smsToast"
-                );
-
-            toast.innerHTML = message;
-
-            toast.style.display = "block";
-
-            setTimeout(() => {
-
-                toast.style.display = "none";
-
-            }, 3000);
-
-        }
-        applyFilters();
-
-        //admin notes model js
-
-        function openEditModal(id, note) {
-
-            document.getElementById("trackerId").value = id;
-
-            document.getElementById("adminNoteText").value = note;
-
-            document.getElementById("adminNoteText").readOnly = false;
-
-            document.querySelector(".notify-btn.mt-3").style.display = "inline-block";
-
-            document.getElementById("adminNoteModal").style.display = "block";
-
-        }
-
-        function openViewModal(note) {
-
-            document.getElementById("adminNoteText").value = note;
-
-            document.getElementById("adminNoteText").readOnly = true;
-
-            document.querySelector(".notify-btn.mt-3").style.display = "none";
-
-            document.getElementById("adminNoteModal").style.display = "block";
-
-        }
-
-        function closeAdminModal() {
-
-            document.getElementById("adminNoteModal").style.display = "none";
-
-            document.getElementById("adminNoteText").readOnly = false;
-
-            document.querySelector(".notify-btn.mt-3").style.display = "inline-block";
-
-        }
-
-        function saveAdminNotes() {
-
-            const trackerId =
-                document.getElementById("trackerId").value;
-
-            const note =
-                document.getElementById("adminNoteText").value;
-
-            fetch("/attendance/save-admin-notes/", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-
-                body: JSON.stringify({
-
-                    tracker_id: trackerId,
-                    notes: note
-
-                })
-
-            })
-
-                .then(response => response.json())
-
-                .then(data => {
-
-                    if (data.status === "success") {
-
-                        alert("Notes Saved Successfully!");
-
-                        closeAdminModal();
-
-                        location.reload();
+                        visibleCount++;
 
                     }
 
                 });
+                document.getElementById(
+                    "resultsCount"
+                ).innerHTML =
 
-        }
+                    `Showing ${visibleCount} of ${totalCount} Students`;
 
-    </script>
+
+            }
+
+            document.querySelectorAll(
+                ".filter-input, .filter-select"
+            ).forEach(input => {
+
+                input.addEventListener(
+                    "keyup",
+                    applyFilters
+                );
+
+                input.addEventListener(
+                    "change",
+                    applyFilters
+                );
+
+            });
+            document.getElementById(
+                "clearFilters"
+            ).addEventListener(
+                "click",
+                function () {
+
+                    document.querySelectorAll(
+                        ".filter-input"
+                    ).forEach(input => {
+
+                        input.value = "";
+
+                    });
+
+                    document.getElementById(
+                        "statusFilter"
+                    ).value = "";
+
+                    document.getElementById(
+                        "courseFilter"
+                    ).value = "";
+                    document.getElementById(
+                        "batchFilter"
+                    ).value = "";
+
+                    applyFilters();
+
+
+
+                }
+            );
+
+            document.getElementById(
+                "showAllBtn"
+            ).addEventListener(
+                "click",
+                function () {
+
+                    document.querySelectorAll(
+                        ".filter-input"
+                    ).forEach(input => {
+
+                        input.value = "";
+
+                    });
+
+                    document.getElementById(
+                        "statusFilter"
+                    ).value = "";
+
+                    document.getElementById(
+                        "courseFilter"
+                    ).value = "";
+
+                    document.getElementById(
+                        "batchFilter"
+                    ).value = "";
+
+                    applyFilters();
+
+                }
+            );
+
+            function showToast(message) {
+
+                const toast =
+                    document.getElementById(
+                        "smsToast"
+                    );
+
+                toast.innerHTML = message;
+
+                toast.style.display = "block";
+
+                setTimeout(() => {
+
+                    toast.style.display = "none";
+
+                }, 3000);
+
+            }
+            applyFilters();
+
+            // Admin Notes Modal
+
+            function openEditModal(id, note) {
+
+                document.getElementById(
+                    "trackerId"
+                ).value = id;
+
+                document.getElementById(
+                    "adminNoteText"
+                ).value = note || "";
+
+                document.getElementById(
+                    "adminNoteText"
+                ).readOnly = false;
+
+                document.querySelector(
+                    ".notify-btn.mt-3"
+                ).style.display = "inline-block";
+
+                document.getElementById(
+                    "adminNoteModal"
+                ).style.display = "block";
+
+            }
+
+            function openViewModal(id, note) {
+
+                document.getElementById(
+                    "trackerId"
+                ).value = id;
+
+                document.getElementById(
+                    "adminNoteText"
+                ).value = note || "No notes available";
+
+                document.getElementById(
+                    "adminNoteText"
+                ).readOnly = true;
+
+                document.getElementById(
+                    "saveNoteBtn"
+                ).style.display = "none";
+
+                document.getElementById(
+                    "editNoteBtn"
+                ).style.display = "inline-block";
+
+                document.getElementById(
+                    "adminNoteModal"
+                ).style.display = "block";
+            }
+            function closeAdminModal() {
+
+                document.getElementById(
+                    "adminNoteModal"
+                ).style.display = "none";
+
+                document.getElementById(
+                    "adminNoteText"
+                ).value = "";
+
+                document.getElementById(
+                    "adminNoteText"
+                ).readOnly = false;
+
+                document.querySelector(
+                    ".notify-btn.mt-3"
+                ).style.display = "inline-block";
+
+            }
+
+            function saveAdminNotes() {
+
+                const trackerId =
+                    document.getElementById(
+                        "trackerId"
+                    ).value;
+
+                const note =
+                    document.getElementById(
+                        "adminNoteText"
+                    ).value.trim();
+
+                fetch(
+                    "/api/save-admin-notes/",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "X-CSRFToken":
+                                "{{ csrf_token }}"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            tracker_id: trackerId,
+
+                            notes: note
+
+                        })
+
+                    }
+
+                )
+
+                    .then(response => response.json())
+
+                    .then(data => {
+
+                        console.log("SERVER RESPONSE:", data);
+
+                        if (data.status === "success") {
+
+                            closeAdminModal();
+
+                            alert(
+                                "Notes Saved Successfully!"
+                            );
+
+                            setTimeout(() => {
+
+                                location.reload();
+
+                            }, 300);
+
+                        } else {
+
+                            alert(
+                                "Failed to save notes."
+                            );
+
+                        }
+
+                    })
+
+                    .catch(error => {
+
+                        console.error(error);
+
+                        alert(
+                            "Error saving notes."
+                        );
+
+                    });
+
+            }
+
+            function enableEditMode() {
+
+                document.getElementById(
+                    "adminNoteText"
+                ).readOnly = false;
+
+                document.getElementById(
+                    "saveNoteBtn"
+                ).style.display = "inline-block";
+
+                document.getElementById(
+                    "editNoteBtn"
+                ).style.display = "none";
+            }
+
+        </script>
     </div>
 
 
