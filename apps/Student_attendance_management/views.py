@@ -1463,9 +1463,12 @@ def reports(request):
 
     # Monthly Chart
 
-    monthly_present = []
-    monthly_absent = []
-    monthly_late = []
+    #monthly_present = []
+    #monthly_absent = []
+    #monthly_late = []
+    monthly_present = [0] * 12
+    monthly_absent = [0] * 12
+    monthly_late = [0] * 12
     
     
     
@@ -1479,39 +1482,28 @@ def reports(request):
         
     if batch_filter:
         attendance_qs = attendance_qs.filter(
-            
-            batch__batch_name__iexact=
-            batch_filter
-        )
+        enrollment__batch__batch_name__iexact=batch_filter
+    )
 
     for month in range(1, 13):
 
-        monthly_present.append(
+        monthly_present[month - 1] = attendance_qs.filter(
+            attendance_date__month=month,
+            attendance_date__year=today.year,
+            status="Present"
+        ).count()
 
-            attendance_qs.filter(
-                attendance_date__month=month,
-                status='Present'
-            ).count()
+        monthly_absent[month - 1] = attendance_qs.filter(
+            attendance_date__month=month,
+            attendance_date__year=today.year,
+            status="Absent"
+        ).count()
 
-        )
-
-        monthly_absent.append(
-
-             attendance_qs.filter(
-                attendance_date__month=month,
-                status='Absent'
-            ).count()
-
-        )
-
-        monthly_late.append(
-
-             attendance_qs.filter(
-                attendance_date__month=month,
-                status='Late'
-            ).count()
-
-        )
+        monthly_late[month - 1] = attendance_qs.filter(
+            attendance_date__month=month,
+            attendance_date__year=today.year,
+            status="Late"
+        ).count()
 
     # Course Analytics
 
@@ -1579,21 +1571,24 @@ def reports(request):
         
         present_count = Attendance.objects.filter(
             batch=batch,
+            attendance_date=latest_attendance.attendance_date,
             status="Present"
         ).count()
         
         absent_count = Attendance.objects.filter(
             batch=batch,
+            attendance_date=latest_attendance.attendance_date,
             status="Absent"
         ).count()
         
         late_count = Attendance.objects.filter(
             batch=batch,
+             attendance_date=latest_attendance.attendance_date,
             status="Late"
         ).count()
 
         total_count = Attendance.objects.filter(
-            batch=batch
+            batch=batch,
         ).count()
 
         percentage = round(
