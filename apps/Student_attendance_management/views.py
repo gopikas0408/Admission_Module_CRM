@@ -1322,7 +1322,9 @@ def reports(request):
 
     absent_today = Attendance.objects.filter(
         attendance_date=today,
-        status='Absent'
+        ).filter(
+            Q(status='Present') |
+            Q(status='Late')
     ).count()
 
     low_attendance = len(

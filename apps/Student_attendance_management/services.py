@@ -189,7 +189,7 @@ def get_low_attendance_data():
         if (
             attendance_percentage < 60
             or consecutive_absences >= 3
-            or total_absences >= 8
+            or total_absences >= 5
         ):
 
             alert_level = "Critical"
@@ -197,7 +197,7 @@ def get_low_attendance_data():
         elif (
             attendance_percentage < 75
             or consecutive_absences == 2
-            or total_absences >= 5
+            or total_absences >= 3
         ):
 
             alert_level = "Warning"
