@@ -401,6 +401,8 @@
     {{ batch_late_list|json_script:"batch-late-list" }}
     {{ batch_percentage_list|json_script:"batch-percentage-list" }}
 
+    {{ latest_month|json_script:"latest-month" }}
+
     <script>
 
         const attendanceChart = document.getElementById(
@@ -458,6 +460,12 @@
         const percentageList = JSON.parse(
             document.getElementById(
                 "batch-percentage-list"
+            ).textContent
+        );
+
+        const latestMonth = JSON.parse(
+            document.getElementById(
+                "latest-month"
             ).textContent
         );
 

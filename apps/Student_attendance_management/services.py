@@ -1,5 +1,6 @@
 from .models import Attendance, AbsentTracker
 from apps.admissions.models import Enrollment
+from django.db.models import Q
 
 
 def get_absent_tracker_data():
@@ -35,7 +36,8 @@ def get_absent_tracker_data():
         ).count()
 
         present_count = attendance_records.filter(
-            status='Present'
+            Q(status='Present') |
+            Q(status='Late')
         ).count()
 
         consecutive_absences = 0
@@ -154,7 +156,8 @@ def get_low_attendance_data():
             continue
 
         present_count = attendance_records.filter(
-            status='Present'
+            Q(status='Present') |
+            Q(status='Late')
         ).count()
 
         total_absences = attendance_records.filter(

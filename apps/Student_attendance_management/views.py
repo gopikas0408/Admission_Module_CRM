@@ -1169,6 +1169,7 @@ from django.db.models import Count
 from apps.admissions.models import Enrollment, Course
 from .models import Attendance, Batch
 from .services import get_low_attendance_data
+from django.db.models import Q
 
 def get_report_students():
 
@@ -1187,8 +1188,11 @@ def get_report_students():
     for enrollment in enrollments:
 
         present_count = Attendance.objects.filter(
-            enrollment=enrollment,
-            status='Present'
+            enrollment=enrollment
+            
+        ).filter(
+            Q(status='Present') |
+            Q(status='Late')
         ).count()
 
         absent_count = Attendance.objects.filter(
@@ -1358,8 +1362,11 @@ def reports(request):
         for enrollment in enrollments:
 
             present_count = Attendance.objects.filter(
-                enrollment=enrollment,
-                status='Present'
+                enrollment=enrollment
+               
+            ).filter(
+                Q(status='Present') |
+                Q(status='Late')
             ).count()
 
             attendance_rate = (
@@ -1398,8 +1405,11 @@ def reports(request):
 
         present_count = Attendance.objects.filter(
             enrollment=enrollment,
-            status='Present'
-        ).count()
+            
+        ).filter(
+            Q(status='Present') |
+            Q(status='Late')
+            ).count()
 
         absent_count = Attendance.objects.filter(
             enrollment=enrollment,
@@ -1572,6 +1582,9 @@ def reports(request):
         present_count = Attendance.objects.filter(
             batch=batch,
             attendance_date=latest_attendance.attendance_date,
+           #).filter(
+               # Q(status="Present") |
+            #    Q(status="Late")
             status="Present"
         ).count()
         
@@ -1589,10 +1602,20 @@ def reports(request):
 
         total_count = Attendance.objects.filter(
             batch=batch,
+            attendance_date=latest_attendance.attendance_date
         ).count()
 
+       # percentage = round(
+        #    (present_count / total_count) * 100,
+         #   1
+        #) if total_count else 0
+        
+        effective_present = (
+            present_count +
+            late_count
+        )
         percentage = round(
-            (present_count / total_count) * 100,
+            (effective_present / total_count) * 100,
             1
         ) if total_count else 0
         
