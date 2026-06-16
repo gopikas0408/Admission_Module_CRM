@@ -277,8 +277,7 @@
                         {% for student in report_students %}
 
                         <tr class="report-row" data-name="{{ student.student.first_name|lower }}"
-                            data-course="{{ student.course.course_name|lower }}"
-                            data-batch="{{ student.batch.batch_name|lower }}|{{ student.course.course_name|lower }}"
+                            data-course="{{ student.course.course_name|lower }}" data-batch="{{ student.batch.id }}"
                             data-attendance="{{ student.attendance_rate }}" data-status="{{ student.status|lower }}">
 
 
@@ -843,10 +842,10 @@
                         studentName.startsWith(name))
 
                     &&
-                    
+
 
                     (course === "" ||
-                        studentCourse.includes(course))
+                        studentCourse === course)
 
                     &&
 

@@ -91,7 +91,7 @@
                 <option value="">Course</option>
 
                 {% for course in courses %}
-                <option value="{{ course.course_name }}">
+                <option value="{{ course.course_name|lower }}">
                     {{ course.course_name }}
                 </option>
                 {% endfor %}
@@ -102,7 +102,7 @@
                 <option value="">Batch</option>
 
                 {% for batch in batches %}
-               <option value="{{ batch.batch_name|lower }}|{{ batch.course.course_name|lower }}">
+               <option value="{{ batch.id }}">
                     {{ batch.batch_name }}
                     ({{ batch.course.course_name }})
                 </option>
@@ -221,7 +221,7 @@
                     <tr class="student-row"
                         data-name="{{ student.student.first_name|lower }} {{ student.student.last_name|lower }}"
                         data-course="{{ student.course.course_name|lower }}"
-                        data-batch="{{ student.batch.batch_name|lower }}|{{ student.course.course_name|lower }}"
+                        data-batch="{{ student.batch.id }}"
                         data-phone="{{ student.student.phone_no|lower }}" data-email="{{ student.student.email|lower }}"
                         data-status="{{ student.alert_level|lower }}">
 
@@ -699,13 +699,11 @@
 
                         (course === "" ||
                             row.dataset.course
-                                .toLowerCase()
-                                .includes(course)) &&
+                                .toLowerCase() === course) &&
 
                         (batch === "" ||
                             row.dataset.batch
-                                .toLowerCase()
-                                .includes(batch)) &&
+                                .toLowerCase() === batch) &&
 
                         (phone === "" ||
                             row.dataset.phone

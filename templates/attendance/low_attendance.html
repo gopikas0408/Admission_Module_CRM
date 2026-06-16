@@ -40,7 +40,7 @@
                 <option value="">Batches</option>
 
                 {% for batch in batches %}
-                <option value="{{ batch.batch_name|lower }}|{{ batch.course.course_name|lower }}">
+                <option value="{{ batch.id }}">
                     {{ batch.batch_name }}
                     ({{ batch.course.course_name }})
                 </option>
@@ -102,8 +102,7 @@
                     {% if student.attendance_percentage < 60 %} <div
                         class="student-warning-card critical-warning-card low-card"
                         data-name="{{ student.student.first_name|lower }} {{ student.student.last_name|lower }}"
-                        data-course="{{ student.course.course_name|lower }}"
-                        data-batch="{{ student.batch.batch_name|lower }}"
+                        data-course="{{ student.course.course_name|lower }}" data-batch="{{ student.batch.id }}"
                         data-percentage="{{ student.attendance_percentage }}">
 
                         <div class="student-left-section">
@@ -213,8 +212,7 @@
                 {% if student.attendance_percentage >= 60 and student.attendance_percentage <= 75 %} <div
                     class="student-warning-card warning-warning-card low-card"
                     data-name="{{ student.student.first_name|lower }} {{ student.student.last_name|lower }}"
-                    data-course="{{ student.course.course_name|lower }}"
-                   data-batch="{{ student.batch.batch_name|lower }}|{{ student.course.course_name|lower }}"
+                    data-course="{{ student.course.course_name|lower }}" data-batch="{{ student.batch.id }}"
                     data-percentage="{{ student.attendance_percentage }}">
                     <div class="student-left-section">
 
@@ -676,8 +674,7 @@
                 ||
 
                 card.dataset.course
-                    .toLowerCase()
-                    .includes(course);
+                    .toLowerCase() === course;
 
             const batchMatch =
 
@@ -685,9 +682,7 @@
 
                 ||
 
-                card.dataset.batch
-                    .toLowerCase()
-                    .includes(batch);
+                card.dataset.batch == batch;
 
             card.style.display =
 

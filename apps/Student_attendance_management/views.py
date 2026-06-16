@@ -1507,11 +1507,15 @@ def reports(request):
 
         report_students.append({
 
+            #"student":
+            #enrollment.student,
             "student":
-            enrollment.student,
+            enrollment.admission.student,
 
+            #"course":
+            #enrollment.course,
             "course":
-            enrollment.course,
+            enrollment.admission.course_name,
 
             "batch":
             enrollment.batch,
