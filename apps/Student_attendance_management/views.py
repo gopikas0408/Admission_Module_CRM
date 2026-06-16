@@ -792,6 +792,24 @@ def low_attendance_alerts(request):
     low_attendance_students = (
         get_low_attendance_data()
     )
+    course_filter = request.GET.get("course")
+
+    if course_filter:
+        low_attendance_students = [
+            student for student in low_attendance_students
+            if student["course"].lower() == course_filter.lower()
+        ]
+    batch_filter = request.GET.get("batch")
+
+    if batch_filter:
+        low_attendance_students = [
+            student for student in low_attendance_students
+            if student["batch"].lower() == batch_filter.lower()
+        ]
+
+    courses = Course.objects.all()
+
+    batches = Batch.objects.all()
 
     return render(
 
@@ -801,11 +819,14 @@ def low_attendance_alerts(request):
 
         {
             'low_attendance_students':
-            low_attendance_students
+            low_attendance_students,
+
+            'courses': courses,
+
+            'batches': batches,
         }
 
     )
-    
     
 def send_low_attendance_email(request, enrollment_id):
 
@@ -1270,7 +1291,11 @@ def reports(request):
     batch_filter = request.GET.get(
         "batch"
     )
-    
+    #selected_batch = ""
+
+    #if batch_filter:
+      #  selected_batch = batch_filter.split("|")[0]
+        
     status_filter = request.GET.get(
         "status"
     )
@@ -1278,10 +1303,20 @@ def reports(request):
     batch_chart_title = "Batch-wise Attendance"
     
     if batch_filter:
-        batch_chart_title = (
-            f"Batch-wise Attendance - "
-            f"{batch_filter.title()}"
-        )
+       # batch_chart_title = (
+          #  f"Batch-wise Attendance - "
+          #  f"{batch_filter.title()}"
+       # )
+       selected_batch_obj = Batch.objects.filter(
+           id = batch_filter
+       ).first()
+       
+       if selected_batch_obj:
+           batch_chart_title = (
+               f"Batch-wise Attendance - "
+               f"{selected_batch_obj.batch_name}"
+               f"({selected_batch_obj.course.course_name})"
+           )
     elif course_filter:
         batch_chart_title = (
             f"Batch-wise Attendance - "
@@ -1350,9 +1385,10 @@ def reports(request):
         )
     if batch_filter:
         enrollments = enrollments.filter(
-            batch__batch_name__iexact=
-            batch_filter
-    )
+            #batch__batch_name__iexact=
+           # selected_batch
+            batch_id=batch_filter
+        )
     total_days = Attendance.objects.values(
         'attendance_date'
     ).distinct().count()
@@ -1474,6 +1510,8 @@ def reports(request):
         })
 
     # Monthly Chart
+    
+    monthly_chart_title = "Monthly Attendance Chart"
 
     #monthly_present = []
     #monthly_absent = []
@@ -1494,8 +1532,9 @@ def reports(request):
         
     if batch_filter:
         attendance_qs = attendance_qs.filter(
-        enrollment__batch__batch_name__iexact=batch_filter
-    )
+            #  enrollment__batch__batch_name__iexact=batch_filter
+            enrollment__batch_id=batch_filter
+        )
 
     for month in range(1, 13):
 
@@ -1560,8 +1599,10 @@ def reports(request):
         )
     if batch_filter:
         batches = batches.filter(
-            batch_name__icontains=
-            batch_filter
+           # batch_name__icontains=
+            #batch_filter
+            id=batch_filter
+
             
         )
 
@@ -1724,6 +1765,8 @@ def reports(request):
         "monthly_chart_title": monthly_chart_title,
         
         "attendance_date": attendance_date,
+        
+        
         
         
             

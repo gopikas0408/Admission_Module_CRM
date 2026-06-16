@@ -70,8 +70,9 @@
 
                 {% for batch in batches %}
 
-                <option value="{{ batch.batch_name|lower }}">
+                <option value="{{ batch.id }}">
                     {{ batch.batch_name }}
+                    ({{ batch.course.course_name }})
                 </option>
 
                 {% endfor %}
@@ -277,7 +278,7 @@
 
                         <tr class="report-row" data-name="{{ student.student.first_name|lower }}"
                             data-course="{{ student.course.course_name|lower }}"
-                            data-batch="{{ student.batch.batch_name|lower }}"
+                           data-batch="{{ student.batch.batch_name|lower }}|{{ student.course.course_name|lower }}"
                             data-attendance="{{ student.attendance_rate }}" data-status="{{ student.status|lower }}">
 
 

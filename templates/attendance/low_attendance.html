@@ -26,9 +26,26 @@
 
             <input type="text" id="studentNameFilter" placeholder="Student Name" class="filter-input">
 
-            <input type="text" id="courseFilter" placeholder="Course" class="filter-input">
+            <select id="courseFilter" class="filter-input filter-select">
+                <option value="">Courses</option>
 
-            <input type="text" id="batchFilter" placeholder="Batch" class="filter-input">
+                {% for course in courses %}
+                <option value="{{ course.course_name|lower }}">
+                    {{ course.course_name }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <select id="batchFilter" class="filter-input filter-select">
+                <option value="">Batches</option>
+
+                {% for batch in batches %}
+                <option value="{{ batch.batch_name|lower }}|{{ batch.course.course_name|lower }}">
+                    {{ batch.batch_name }}
+                    ({{ batch.course.course_name }})
+                </option>
+                {% endfor %}
+            </select>
 
             <input type="text" id="percentageFilter" placeholder="Attendance %" class="filter-input">
 
@@ -197,7 +214,7 @@
                     class="student-warning-card warning-warning-card low-card"
                     data-name="{{ student.student.first_name|lower }} {{ student.student.last_name|lower }}"
                     data-course="{{ student.course.course_name|lower }}"
-                    data-batch="{{ student.batch.batch_name|lower }}"
+                   data-batch="{{ student.batch.batch_name|lower }}|{{ student.course.course_name|lower }}"
                     data-percentage="{{ student.attendance_percentage }}">
                     <div class="student-left-section">
 
@@ -370,18 +387,18 @@
 
     function sendEmailAll() {
 
-       // let msg = document.getElementById("successMessage");
+        // let msg = document.getElementById("successMessage");
 
         //msg.classList.remove("d-none");
         //msg.classList.remove("alert-danger");
         //msg.classList.add("alert-success");
 
-       Swal.fire({
-           icon: "info",
-           title: "Sending Emails",
-           text: "Please wait...",
-           allowOutsideClick: false,
-           showConfirmButton: false
+        Swal.fire({
+            icon: "info",
+            title: "Sending Emails",
+            text: "Please wait...",
+            allowOutsideClick: false,
+            showConfirmButton: false
         });
 
         fetch("/api/send-email-all/")
@@ -399,16 +416,16 @@
                 showPopup(data.message);
 
                 //setTimeout(() => {
-                  //  msg.classList.add("d-none");
-               // }, 1000);
+                //  msg.classList.add("d-none");
+                // }, 1000);
 
             })
 
             .catch(error => {
 
-               // msg.classList.remove("d-none");
-               // msg.classList.remove("alert-success");
-               // msg.classList.add("alert-danger");
+                // msg.classList.remove("d-none");
+                // msg.classList.remove("alert-success");
+                // msg.classList.add("alert-danger");
 
                 showPopup(
                     "❌ Email Sending Failed",
@@ -416,7 +433,7 @@
                 );
 
                 //setTimeout(() => {
-                  //  msg.classList.add("d-none");
+                //  msg.classList.add("d-none");
                 //}, 1000);
 
             });
@@ -425,7 +442,7 @@
 
     function sendSMSAll() {
 
-       // let msg = document.getElementById("successMessage");
+        // let msg = document.getElementById("successMessage");
 
         //msg.classList.remove("d-none");
         //msg.classList.remove("alert-danger");
@@ -455,7 +472,7 @@
 
                 //setTimeout(() => {
                 //    msg.classList.add("d-none");
-               // }, 1000);
+                // }, 1000);
 
             })
 
@@ -469,8 +486,8 @@
                     "❌ SMS Sending Failed",
                     true
                 );
-               // setTimeout(() => {
-                 //   msg.classList.add("d-none");
+                // setTimeout(() => {
+                //   msg.classList.add("d-none");
                 //}, 1000);
 
             });
@@ -481,7 +498,7 @@
 
         //let msg = document.getElementById("successMessage");
 
-       // msg.classList.remove("d-none");
+        // msg.classList.remove("d-none");
         //msg.classList.remove("alert-danger");
         //msg.classList.add("alert-success");
 
@@ -499,16 +516,16 @@
 
             .then(data => {
 
-               // msg.classList.remove("d-none");
-               // msg.classList.remove("alert-danger");
-               // msg.classList.add("alert-success");
+                // msg.classList.remove("d-none");
+                // msg.classList.remove("alert-danger");
+                // msg.classList.add("alert-success");
 
                 Swal.close();
 
                 showPopup(data.message);
-               // setTimeout(() => {
-                 //   msg.classList.add("d-none");
-               // }, 1000);
+                // setTimeout(() => {
+                //   msg.classList.add("d-none");
+                // }, 1000);
 
             })
 
@@ -523,8 +540,8 @@
                     true
                 );
 
-               // setTimeout(() => {
-                 //   msg.classList.add("d-none");
+                // setTimeout(() => {
+                //   msg.classList.add("d-none");
                 //}, 1000);
 
             });
@@ -539,9 +556,9 @@
 
             //let msg = document.getElementById("successMessage");
 
-           // msg.classList.remove("d-none");
-           // msg.classList.remove("alert-danger");
-           // msg.classList.add("alert-success");
+            // msg.classList.remove("d-none");
+            // msg.classList.remove("alert-danger");
+            // msg.classList.add("alert-success");
 
             if (this.href.includes("send_sms")) {
 
@@ -570,8 +587,8 @@
 
                 .then(data => {
 
-                   // msg.classList.remove("d-none");
-                   // msg.classList.remove("alert-danger");
+                    // msg.classList.remove("d-none");
+                    // msg.classList.remove("alert-danger");
                     //msg.classList.add("alert-success");
                     Swal.close();
 
@@ -585,9 +602,9 @@
 
                 .catch(error => {
 
-                   // msg.classList.remove("d-none");
-                   // msg.classList.remove("alert-success");
-                   // msg.classList.add("alert-danger");
+                    // msg.classList.remove("d-none");
+                    // msg.classList.remove("alert-success");
+                    // msg.classList.add("alert-danger");
 
                     showPopup(
                         "❌ Notification Sending Failed",
@@ -725,14 +742,16 @@
     document.getElementById(
         "courseFilter"
     ).addEventListener(
-        "keyup",
+        //"keyup",
+        "change",
         applyFilters
     );
 
     document.getElementById(
         "batchFilter"
     ).addEventListener(
-        "keyup",
+        //"keyup",
+        "change",
         applyFilters
     );
 
