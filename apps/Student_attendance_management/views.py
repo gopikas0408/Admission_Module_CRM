@@ -1245,9 +1245,11 @@ def get_report_students():
 
         report_students.append({
 
-            "student": enrollment.student,
+            #"student": enrollment.student,
+            "student": enrollment.admission.student,
 
-            "course": enrollment.course,
+            #"course": enrollment.course,
+            "course": enrollment.admission.course_name,
 
             "batch": enrollment.batch,
 
@@ -1283,6 +1285,13 @@ def reports(request):
             "%d %b %Y"
         )
     #filters
+    
+    student_name = request.GET.get(
+        "student_name"
+    )
+    attendance_filter = request.GET.get(
+        "attendance"
+    )
     
     course_filter = request.GET.get(
         "course"
@@ -1352,14 +1361,14 @@ def reports(request):
 
     present_today = Attendance.objects.filter(
         attendance_date=today,
-        status='Present'
-    ).count()
-
-    absent_today = Attendance.objects.filter(
-        attendance_date=today,
         ).filter(
             Q(status='Present') |
             Q(status='Late')
+        ).count()
+
+    absent_today = Attendance.objects.filter(
+        attendance_date=today,
+        status='Absent'
     ).count()
 
     low_attendance = len(
@@ -1389,6 +1398,11 @@ def reports(request):
            # selected_batch
             batch_id=batch_filter
         )
+    if student_name:
+        enrollments = enrollments.filter(
+            admission__student__first_name__istartswith=
+            student_name
+        )
     total_days = Attendance.objects.values(
         'attendance_date'
     ).distinct().count()
@@ -1414,6 +1428,12 @@ def reports(request):
                 )
                 if total_days > 0 else 0
             )
+            if attendance_filter:
+
+                if attendance_rate < float(
+                    attendance_filter
+                ):
+                    continue
 
             if attendance_rate == 100:
                 status = "Excellent"
@@ -1466,6 +1486,12 @@ def reports(request):
             )
             if total_days > 0 else 0
         )
+        if attendance_filter:
+
+            if attendance_rate < float(
+                attendance_filter
+            ):
+                continue
 
         if attendance_rate == 100:
             status = "Excellent"

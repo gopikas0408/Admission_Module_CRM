@@ -278,7 +278,7 @@
 
                         <tr class="report-row" data-name="{{ student.student.first_name|lower }}"
                             data-course="{{ student.course.course_name|lower }}"
-                           data-batch="{{ student.batch.batch_name|lower }}|{{ student.course.course_name|lower }}"
+                            data-batch="{{ student.batch.batch_name|lower }}|{{ student.course.course_name|lower }}"
                             data-attendance="{{ student.attendance_rate }}" data-status="{{ student.status|lower }}">
 
 
@@ -797,6 +797,12 @@
                 document.getElementById(
                     "statusFilter"
                 ).value.toLowerCase().trim();
+            const student_name =
+                document.getElementById(
+                    "studentNameFilter"
+                ).value;
+
+
 
             const attendance =
                 document.getElementById(
@@ -837,6 +843,7 @@
                         studentName.startsWith(name))
 
                     &&
+                    
 
                     (course === "" ||
                         studentCourse.includes(course))
@@ -919,8 +926,18 @@
                         "statusFilter"
                     ).value;
 
+                const student_name =
+                    document.getElementById(
+                        "studentNameFilter"
+                    ).value;
+
+                const attendance =
+                    document.getElementById(
+                        "attendanceFilter"
+                    ).value;
+
                 window.location.href =
-                    `?course=${course}&batch=${batch}&status=${status}`;
+                    `?student_name=${student_name}&course=${course}&batch=${batch}&status=${status}&attendance=${attendance}`;
 
             }
         );
